@@ -81,7 +81,7 @@
         }
         .balance-display {
             font-family: 'Fredoka One', cursive; /* Funky font for balance */
-            font-size: 2.8em; /* Adjusted font size for balance - Smaller */
+            font-size: 1.8em; /* Adjusted font size for balance - MUCH SMALLER */
             font-weight: 700;
             color: var(--main-red); /* Red balance as per image */
             display: flex;
@@ -91,6 +91,7 @@
             position: relative;
             height: 1.2em; /* Ensure fixed height for animation */
             overflow: hidden; /* Hide overflow during animation */
+            white-space: nowrap; /* Prevent wrapping */
         }
         .balance-amount {
             position: relative;
@@ -175,7 +176,7 @@
             height: 100%; /* Fill parent height */
             box-sizing: border-box;
             /* Added min-width to ensure button doesn't shrink too much */
-            min-width: 80px; /* Adjust as needed */
+            min-width: 80px; /* Adjusted to ensure visibility */
         }
         .input-group-custom button:hover {
             background-color: var(--dark-red);
@@ -300,7 +301,10 @@
             <h3>Balance</h3>
             <div class="balance-display">
                 <span class="taka-icon">৳</span>
-                <span id="current-balance" class="balance-amount">00.00.000</span>
+                <span id="taka-part" class="balance-amount-segment">00</span>.
+                <span id="paisa-part" class="balance-amount-segment">00</span>.
+                <span id="sub-paisa1-part" class="balance-amount-segment">000</span>.
+                <span id="sub-paisa2-part" class="balance-amount-segment">000</span>
             </div>
             <p class="speed-level">Speed Level: <span id="mining-speed-display">10%</span></p>
             <div class="user-info">
@@ -435,19 +439,23 @@
             }
 
             let currentUserData = initialUserData;
-            const balanceDisplay = document.getElementById('current-balance');
+            const takaPart = document.getElementById('taka-part');
+            const paisaPart = document.getElementById('paisa-part');
+            const subPaisa1Part = document.getElementById('sub-paisa1-part');
+            const subPaisa2Part = document.getElementById('sub-paisa2-part');
+
+
             const dailyEarnings = 10; // 10 BDT per 24 hours
             const millisecondsPerDay = 24 * 60 * 60 * 1000;
             const updateFrequency = 100; // Update every 100 milliseconds for smooth animation
 
             // Calculate earnings from last session
             const now = Date.now();
-            // Ensure lastMiningTime exists and is a number, otherwise use current time
             const lastTime = typeof currentUserData.lastMiningTime === 'number' ? currentUserData.lastMiningTime : now;
             const timeElapsedSinceLastLogin = now - lastTime;
 
-            const earningsToAdd = (timeElapsedSinceLastLogin / millisecondsPerDay) * dailyEarnings * (currentUserData.miningSpeed / 100);
-            currentUserData.balance = parseFloat(((currentUserData.balance || 0) + earningsToAdd).toFixed(6)); // Add and fix to 6 decimal places
+            const earningsToAdd = (timeElapsedSinceLastLogin / millisecondsPerDay) * dailyEarnings * ((currentUserData.miningSpeed || 10) / 100);
+            currentUserData.balance = parseFloat(((currentUserData.balance || 0) + earningsToAdd).toFixed(8)); // Store with higher precision for 8 decimals
             currentUserData.lastMiningTime = now;
 
             // Update database with calculated earnings
@@ -477,8 +485,8 @@
                 const timeSinceLastUpdate = currentNow - currentUserData.lastMiningTime;
 
                 // Calculate incremental earnings based on the actual time elapsed since last update
-                const incrementalEarnings = (timeSinceLastUpdate / millisecondsPerDay) * dailyEarnings * (currentUserData.miningSpeed / 100);
-                currentUserData.balance = parseFloat(((currentUserData.balance || 0) + incrementalEarnings).toFixed(6));
+                const incrementalEarnings = (timeSinceLastUpdate / millisecondsPerDay) * dailyEarnings * ((currentUserData.miningSpeed || 10) / 100);
+                currentUserData.balance = parseFloat(((currentUserData.balance || 0) + incrementalEarnings).toFixed(8)); // Maintain 8 decimal places
                 currentUserData.lastMiningTime = currentNow;
 
                 // Update database
@@ -487,16 +495,31 @@
                     lastMiningTime: currentUserData.lastMiningTime
                 });
                 
-                // Update display immediately (Frontend animation)
+                // Update display immediately (Frontend animation) XX.YY.ZZZ.PPP format
                 const totalBalance = currentUserData.balance;
+
                 const taka = Math.floor(totalBalance);
-                const paisa = Math.floor((totalBalance * 100) % 100);
-                const subPaisa = Math.floor((totalBalance * 1000) % 10); // First digit after paisa
+                let remainingFraction = totalBalance - taka;
 
+                let paisa = Math.floor(remainingFraction * 100); // 2 digits after decimal
+                remainingFraction = remainingFraction * 100 - paisa; // New remaining fraction
+
+                let subPaisa1 = Math.floor(remainingFraction * 1000); // Next 3 digits
+                remainingFraction = remainingFraction * 1000 - subPaisa1;
+
+                let subPaisa2 = Math.floor(remainingFraction * 1000); // Next 3 digits
+
+                // Pad all parts with leading zeros
+                const formattedTaka = taka.toString().padStart(2, '0');
                 const formattedPaisa = paisa.toString().padStart(2, '0');
-                const formattedSubPaisa = subPaisa.toString().padStart(1, '0') + '00'; // Ensure 3 digits for subPaisa part
+                const formattedSubPaisa1 = subPaisa1.toString().padStart(3, '0');
+                const formattedSubPaisa2 = subPaisa2.toString().padStart(3, '0');
 
-                balanceDisplay.textContent = `${taka.toString().padStart(2, '0')}.${formattedPaisa}.${formattedSubPaisa}`;
+                takaPart.textContent = formattedTaka;
+                paisaPart.textContent = formattedPaisa;
+                subPaisa1Part.textContent = formattedSubPaisa1;
+                subPaisa2Part.textContent = formattedSubPaisa2;
+
 
             }, updateFrequency);
         }
@@ -550,11 +573,6 @@
 
             try {
                 // Find referrer UID by referral code
-                // Use a query on the referralCodes node where the value (UID) matches
-                const referralCodeRef = ref(database, 'referralCodes');
-                const referralCodeQuery = query(referralCodeRef, orderByValue(), equalTo(currentUserUid)); // No, this finds YOUR referral code.
-                
-                // Correct query: Find the UID associated with the submittedCode
                 const referrerUidSnapshot = await get(ref(database, 'referralCodes/' + submittedCode));
                 let referrerUid = null;
                 if (referrerUidSnapshot.exists()) {
@@ -570,7 +588,7 @@
                     await update(currentUserRef, {
                         referredBy: referrerUid,
                         miningSpeed: (currentUserData.miningSpeed || 10) + 10, // User gets 10% speed bonus
-                        balance: parseFloat(((currentUserData.balance || 0) + 50).toFixed(6)) // User gets 50 BDT bonus
+                        balance: parseFloat(((currentUserData.balance || 0) + 50).toFixed(8)) // User gets 50 BDT bonus, fixed to 8 decimal places
                     });
 
                     // Update referrer's data
@@ -609,7 +627,7 @@
 
             try {
                 await update(currentUserRef, {
-                    balance: parseFloat(((currentUserData.balance || 0) + 10).toFixed(6)), // 10 BDT bonus
+                    balance: parseFloat(((currentUserData.balance || 0) + 10).toFixed(8)), // 10 BDT bonus, fixed to 8 decimal places
                     taskClaimed: true
                 });
                 
