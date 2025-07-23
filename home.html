@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হোম - Taka GorBD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --main-red: #E74C3C; /* Bright Red */
+            --white: #FFFFFF;
+            --dark-red: #C0392B;
+            --light-gray: #F0F0F0;
+            --text-color: #333333;
+            --border-radius-large: 30px; /* More rounded as per screenshot */
+            --border-radius-small: 15px; /* For buttons and inner elements */
+            --input-height: 50px;
+            --green-claim: #2ECC71; /* Green for claim button */
+            --orange-help: #FFA500; /* Orange for help button */
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--main-red); /* Solid red background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container {
+            background-color: var(--main-red); /* Container also red */
+            width: 100%;
+            max-width: 400px; /* Fixed width as per screenshot */
+            padding: 0; /* Cards handle their own padding */
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .logout-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--white);
+            font-size: 1.1em;
+            cursor: pointer;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+            padding: 5px 10px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .logout-menu:hover {
+            opacity: 0.9;
+        }
+
+        .balance-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius-large);
+            padding: 30px 20px;
+            margin-top: 60px; /* Space for logout button */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .balance-card h3 {
+            font-size: 1.2em;
+            color: var(--text-color);
+            margin-bottom: 5px; /* Tighter spacing */
+            font-weight: 500;
+        }
+        .balance-display {
+            font-family: 'Fredoka One', cursive; /* Funky font for balance */
+            font-size: 3.5em; /* Large balance display */
+            font-weight: 700;
+            color: var(--main-red); /* Red balance as per image */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            position: relative;
+            height: 1.2em; /* Ensure fixed height for animation */
+            overflow: hidden; /* Hide overflow during animation */
+        }
+        .balance-amount {
+            position: relative;
+            display: inline-block;
+        }
+        .balance-amount span {
+            display: inline-block;
+            transition: transform 0.1s ease-out; /* Smooth digit transition */
+        }
+        .balance-display .taka-icon {
+            font-size: 0.8em;
+            margin-right: 5px;
+            color: #2ECC71; /* Green Taka sign */
+        }
+        .speed-level {
+            font-size: 0.9em;
+            color: var(--dark-gray);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.2em;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+        .user-info .emoji {
+            font-size: 1.5em;
+        }
+
+        .section-card { /* Unified style for referral and task sections */
+            background-color: var(--white);
+            border-radius: var(--border-radius-large);
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: left; /* Align content to left within card */
+        }
+        .section-card h3 {
+            font-size: 1.1em;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+            padding-bottom: 10px;
+        }
+
+        .input-group-custom { /* For "Your Refer code" and "submit refer code" */
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            background-color: var(--light-gray); /* Light gray background for input groups */
+            border-radius: var(--border-radius-small);
+            overflow: hidden; /* To keep inner elements within rounded corners */
+            height: var(--input-height); /* Fixed height */
+        }
+        .input-group-custom span.code-display,
+        .input-group-custom input {
+            flex-grow: 1;
+            padding: 0 15px;
+            font-size: 0.95em;
+            color: var(--text-color);
+            background: none; /* No background, use parent's */
+            border: none;
+            outline: none;
+            height: 100%; /* Fill parent height */
+            box-sizing: border-box;
+            line-height: var(--input-height); /* Vertically center text */
+        }
+        .input-group-custom button {
+            background-color: var(--main-red);
+            color: var(--white);
+            border: none;
+            border-radius: var(--border-radius-small); /* Rounded button inside group */
+            padding: 0 15px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+            height: 100%; /* Fill parent height */
+            box-sizing: border-box;
+        }
+        .input-group-custom button:hover {
+            background-color: var(--dark-red);
+        }
+
+        .referral-stats {
+            font-size: 0.9em;
+            color: var(--dark-gray);
+            margin-top: 10px;
+            text-align: left;
+        }
+        .referral-stats strong {
+            color: var(--text-color);
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            gap: 10px;
+            padding: 10px; /* Padding for the task item itself */
+            background-color: var(--light-gray); /* Background for the whole task item */
+            border-radius: var(--border-radius-small);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* Inner shadow */
+        }
+        .task-item .task-details {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+            cursor: pointer;
+        }
+        .task-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .task-item .task-text {
+            color: var(--text-color);
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+        .task-item .task-text .money-icon {
+            color: var(--green-claim);
+            margin-left: 5px;
+        }
+        .task-item .claim-btn {
+            background-color: var(--green-claim);
+            color: var(--white);
+            border-radius: var(--border-radius-small);
+            padding: 10px 15px;
+            font-size: 0.9em;
+            height: auto; /* Allow button to size to content */
+        }
+        .task-item .claim-btn:hover {
+            background-color: #27AE60;
+        }
+        .task-item .claim-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            color: #666;
+        }
+
+        .message {
+            margin-top: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            display: none;
+            text-align: center;
+        }
+        .message-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Help Center Button (fixed on bottom right) */
+        .help-center-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--orange-help);
+            color: var(--white);
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8em;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            animation: pulse 1.5s infinite;
+        }
+        .help-center-btn:hover {
+            background-color: #E69500;
+            transform: scale(1.05);
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 165, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logout-menu" onclick="logout()">
+            logout <i class="fas fa-bars"></i>
+        </div>
+        <div class="balance-card">
+            <h3>Balance</h3>
+            <div class="balance-display">
+                <span class="taka-icon">৳</span>
+                <span id="current-balance" class="balance-amount">00.00</span>
+            </div>
+            <p class="speed-level">Speed Level: <span id="mining-speed-display">10%</span></p>
+            <div class="user-info">
+                <span class="emoji">👋</span> <span id="user-name-display">User Name</span>
+            </div>
+        </div>
+
+        <div class="section-card referral-section">
+            <h3>Referral</h3>
+            <div class="input-group-custom">
+                <span class="code-display" id="user-refer-code">TGBD-XXXXX</span>
+                <button onclick="copyReferralCode()">copy</button>
+            </div>
+            <div class="input-group-custom">
+                <input type="text" id="submit-refer-code" placeholder="submit refer code">
+                <button onclick="submitReferralCode()">submit</button>
+            </div>
+            <p class="referral-stats">You referred: <strong id="referred-count">0</strong> users</p>
+            <p id="referral-message" class="message"></p>
+        </div>
+
+        <div class="section-card task-section">
+            <h3>Task</h3>
+            <div class="task-item">
+                <div class="task-details">
+                    <img src="https://via.placeholder.com/40/FF0000/FFFFFF?text=T" alt="Task User"> <p class="task-text">20 টাকা <i class="fas fa-money-bill-wave money-icon"></i></p>
+                </div>
+                <button id="task-claim-btn" onclick="claimTask()" disabled>Claim</button>
+            </div>
+            <p id="task-message" class="message"></p>
+        </div>
+    </div>
+
+    <a href="https://t.me/Taka_GorBD" target="_blank" class="help-center-btn" title="হেল্প সেন্টার - যেকোনো প্রয়োজনে যোগাযোগ করুন">
+        <i class="fas fa-question"></i>
+    </a>
+
+    <script>
+        const users = JSON.parse(localStorage.getItem('registeredUsers')) || {};
+        let loggedInUserEmail = localStorage.getItem('loggedInUserEmail'); // Get current logged in user
+        let miningInterval; // To control the mining timer
+
+        // Redirect if not logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!loggedInUserEmail || !users[loggedInUserEmail]) {
+                window.location.href = 'login.html'; // Redirect to login if not authenticated
+                return;
+            }
+            // If logged in, populate data and start mining
+            updateHomePageData();
+            startMining();
+        });
+
+        function showMessage(elementId, msg, type) {
+            const messageElement = document.getElementById(elementId);
+            messageElement.textContent = msg;
+            messageElement.className = `message message-${type}`;
+            messageElement.style.display = 'block';
+            setTimeout(() => {
+                hideMessage(elementId);
+            }, 5000);
+        }
+
+        function hideMessage(elementId = null) {
+            if (elementId) {
+                document.getElementById(elementId).style.display = 'none';
+            }
+        }
+
+        function logout() {
+            loggedInUserEmail = null;
+            localStorage.removeItem('loggedInUserEmail');
+            clearInterval(miningInterval); // Stop mining on logout
+            window.location.href = 'login.html'; // Redirect to login page
+        }
+
+        function updateHomePageData() {
+            if (!loggedInUserEmail || !users[loggedInUserEmail]) return;
+
+            const currentUser = users[loggedInUserEmail];
+            document.getElementById('user-name-display').textContent = currentUser.name;
+            document.getElementById('current-balance').textContent = currentUser.balance.toFixed(2);
+            document.getElementById('mining-speed-display').textContent = `${currentUser.miningSpeed}%`;
+            document.getElementById('user-refer-code').textContent = currentUser.referralCode;
+            document.getElementById('referred-count').textContent = currentUser.referralCount;
+
+            const claimBtn = document.getElementById('task-claim-btn');
+            if (currentUser.taskClaimed) {
+                claimBtn.textContent = 'Claimed';
+                claimBtn.disabled = true;
+                claimBtn.style.backgroundColor = '#ccc';
+            } else {
+                claimBtn.textContent = 'Claim';
+                claimBtn.disabled = false;
+                claimBtn.style.backgroundColor = 'var(--green-claim)';
+            }
+        }
+
+        function startMining() {
+            if (!loggedInUserEmail || !users[loggedInUserEmail]) return;
+
+            if (miningInterval) {
+                clearInterval(miningInterval);
+            }
+
+            const currentUser = users[loggedInUserEmail];
+            const dailyEarnings = 10; 
+            const millisecondsPerDay = 24 * 60 * 60 * 1000;
+            
+            // Calculate initial earnings from last mining time (handle first time login/mining)
+            const now = Date.now();
+            const timeElapsed = now - (currentUser.lastMiningTime || now); // If no lastMiningTime, use now
+            const earningsToAdd = (timeElapsed / millisecondsPerDay) * dailyEarnings * (currentUser.miningSpeed / 100);
+            currentUser.balance += earningsToAdd;
+            currentUser.lastMiningTime = now; // Update last mining time for next calculation
+
+            localStorage.setItem('registeredUsers', JSON.stringify(users));
+            updateHomePageData();
+
+            // Set interval for continuous balance update (every 100ms for smooth animation)
+            miningInterval = setInterval(() => {
+                if (!loggedInUserEmail || !users[loggedInUserEmail]) {
+                    clearInterval(miningInterval);
+                    return;
+                }
+                const user = users[loggedInUserEmail];
+                const now = Date.now();
+                const timeSinceLastUpdate = now - user.lastMiningTime;
+
+                // Calculate earnings based on the actual time elapsed since last update
+                const incrementalEarnings = (timeSinceLastUpdate / millisecondsPerDay) * dailyEarnings * (user.miningSpeed / 100);
+                user.balance += incrementalEarnings;
+                user.lastMiningTime = now; // Update last mining time
+
+                localStorage.setItem('registeredUsers', JSON.stringify(users));
+                document.getElementById('current-balance').textContent = user.balance.toFixed(2); // Update display with 2 decimal places
+            }, 100); // Update every 100 milliseconds for a smoother "mining" effect
+        }
+
+        function copyReferralCode() {
+            const referralCodeElement = document.getElementById('user-refer-code');
+            const textArea = document.createElement('textarea');
+            textArea.value = referralCodeElement.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            textArea.remove();
+            showMessage('referral-message', 'রেফার কোড কপি হয়েছে!', 'success');
+        }
+
+        function submitReferralCode() {
+            if (!loggedInUserEmail || !users[loggedInUserEmail]) {
+                showMessage('referral-message', 'রেফার কোড সাবমিট করতে প্রথমে লগইন করুন।', 'error');
+                return;
+            }
+
+            const submittedCode = document.getElementById('submit-refer-code').value.trim();
+            if (!submittedCode) {
+                showMessage('referral-message', 'দয়া করে একটি রেফার কোড দিন।', 'error');
+                return;
+            }
+
+            const currentUser = users[loggedInUserEmail];
+            if (currentUser.referredBy) {
+                showMessage('referral-message', 'আপনি ইতিমধ্যে একটি রেফার কোড ব্যবহার করেছেন।', 'error');
+                return;
+            }
+            if (currentUser.referralCode === submittedCode) {
+                showMessage('referral-message', 'আপনি নিজের রেফার কোড ব্যবহার করতে পারবেন না।', 'error');
+                return;
+            }
+
+            let referrerFound = false;
+            for (const email in users) {
+                if (users[email].referralCode === submittedCode) {
+                    const referrerUser = users[email];
+                    
+                    currentUser.referredBy = email;
+                    currentUser.miningSpeed += 10; 
+                    currentUser.balance += 50; 
+                    
+                    referrerUser.referralCount = (referrerUser.referralCount || 0) + 1;
+                    referrerUser.miningSpeed += 1; 
+                    
+                    localStorage.setItem('registeredUsers', JSON.stringify(users));
+                    updateHomePageData();
+                    showMessage('referral-message', `রেফার কোড সফলভাবে সাবমিট হয়েছে! আপনি ৫০ টাকা বোনাস পেয়েছেন এবং মাইনিং স্পিড ১০% বেড়েছে!`, 'success');
+                    document.getElementById('submit-refer-code').value = '';
+                    referrerFound = true;
+                    
+                    startMining(); // Restart mining to apply new speed immediately
+                    break;
+                }
+            }
+
+            if (!referrerFound) {
+                showMessage('referral-message', 'অকার্যকর রেফার কোড।', 'error');
+            }
+        }
+
+        function claimTask() {
+            if (!loggedInUserEmail || !users[loggedInUserEmail]) {
+                showMessage('task-message', 'টাস্ক ক্লেইম করতে প্রথমে লগইন করুন।', 'error');
+                return;
+            }
+            const currentUser = users[loggedInUserEmail];
+            if (currentUser.taskClaimed) {
+                showMessage('task-message', 'আপনি ইতিমধ্যে এই টাস্কটি ক্লেইম করেছেন।', 'error');
+                return;
+            }
+
+            currentUser.balance += 10; 
+            currentUser.taskClaimed = true; 
+
+            localStorage.setItem('registeredUsers', JSON.stringify(users));
+            updateHomePageData();
+            showMessage('task-message', 'টাস্ক বোনাস সফলভাবে ক্লেইম করা হয়েছে! ১০ টাকা আপনার ব্যালেন্সে যোগ হয়েছে।', 'success');
+
+            const claimBtn = document.getElementById('task-claim-btn');
+            claimBtn.textContent = 'Claimed';
+            claimBtn.disabled = true;
+            claimBtn.style.backgroundColor = '#ccc';
+        }
+
+        // Add event listener to the task image/text to simulate starting task
+        document.querySelector('.task-details').addEventListener('click', function() {
+            if (!loggedInUserEmail || !users[loggedInUserEmail]) {
+                showMessage('task-message', 'টাস্ক সম্পূর্ণ করতে প্রথমে লগইন করুন।', 'error');
+                return;
+            }
+            if (!users[loggedInUserEmail].taskClaimed) {
+                window.open('https://t.me/Taka_GorBD', '_blank'); 
+                
+                // Simulate task completion after some delay, then enable claim button
+                setTimeout(() => {
+                    const claimBtn = document.getElementById('task-claim-btn');
+                    if (!users[loggedInUserEmail].taskClaimed) { // Check again if not already claimed
+                        claimBtn.disabled = false;
+                        claimBtn.textContent = 'Claim Now!';
+                        claimBtn.style.backgroundColor = 'var(--green-claim)';
+                        showMessage('task-message', 'আপনি এখন টাস্ক বোনাস ক্লেইম করতে পারবেন।', 'success');
+                    }
+                }, 3000); 
+            } else {
+                showMessage('task-message', 'আপনি ইতিমধ্যে এই টাস্কটি ক্লেইম করেছেন।', 'error');
+            }
+        });
+    </script>
+</body>
+  </html>
