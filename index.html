@@ -207,7 +207,7 @@
         </div>
 
         <div class="form-card">
-            <form id="registration-form" onsubmit="handleRegistration(event)">
+            <form id="registration-form">
                 <div class="form-group">
                     <input type="text" id="reg-name" class="input-field" placeholder="Name" required>
                 </div>
@@ -236,10 +236,30 @@
         </div>
     </div>
 
-    <script>
-        const users = JSON.parse(localStorage.getItem('registeredUsers')) || {};
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-        function togglePasswordVisibility(id, button) {
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyA0nwj-qooOderNiLvmILB-gIPouy2HG4c",
+          authDomain: "takagorbd.firebaseapp.com",
+          databaseURL: "https://takagorbd-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "takagorbd",
+          storageBucket: "takagorbd.firebasestorage.app",
+          messagingSenderId: "531548262665",
+          appId: "1:531548262665:web:85fb34ea635dae7ddc43d8",
+          measurementId: "G-TZB0NHKYGY"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        // Global functions for HTML access
+        window.togglePasswordVisibility = function(id, button) {
             const input = document.getElementById(id);
             if (input.type === 'password') {
                 input.type = 'text';
@@ -248,35 +268,35 @@
                 input.type = 'password';
                 button.innerHTML = '<i class="fas fa-eye"></i>';
             }
-        }
+        };
 
-        function showMessage(elementId, msg, type) {
+        window.showMessage = function(elementId, msg, type) {
             const messageElement = document.getElementById(elementId);
             messageElement.textContent = msg;
             messageElement.className = `message message-${type}`;
             messageElement.style.display = 'block';
             setTimeout(() => {
-                hideMessage(elementId);
+                window.hideMessage(elementId);
             }, 5000);
-        }
+        };
 
-        function hideMessage(elementId = null) {
+        window.hideMessage = function(elementId = null) {
             if (elementId) {
                 document.getElementById(elementId).style.display = 'none';
             }
-        }
+        };
 
         function generateReferralCode(length = 8) {
             const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = 'TGBD-'; 
+            let result = 'TGBD-';
             const charactersLength = characters.length;
-            for (let i = 0; i < length - 5; i++) { 
+            for (let i = 0; i < length - 5; i++) {
                 result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
             return result;
         }
 
-        function handleRegistration(event) {
+        document.getElementById('registration-form').addEventListener('submit', async (event) => {
             event.preventDefault();
 
             const name = document.getElementById('reg-name').value.trim();
@@ -300,43 +320,51 @@
                 return;
             }
 
-            const emailExists = Object.values(users).some(user => user.email === email);
-            const numberExists = number && Object.values(users).some(user => user.number === number);
+            try {
+                // Create user with email and password
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                const uid = user.uid;
 
-            if (emailExists) {
-                showMessage('reg-message', 'এই ইমেইল দিয়ে ইতিমধ্যে অ্যাকাউন্ট আছে।', 'error');
-                return;
+                const referralCode = generateReferralCode();
+
+                // Save user data to Realtime Database
+                await set(ref(database, 'users/' + uid), {
+                    name: name,
+                    email: email,
+                    number: number,
+                    referralCode: referralCode,
+                    referredBy: null,
+                    balance: 0.00,
+                    miningSpeed: 10, // Default 10% speed
+                    lastMiningTime: Date.now(), // Set initial mining time
+                    referralCount: 0,
+                    taskClaimed: false
+                });
+
+                // Also save referral code to a separate node for quick lookup
+                await set(ref(database, 'referralCodes/' + referralCode), uid);
+
+                showMessage('reg-message', 'রেজিস্ট্রেশন সফল হয়েছে! এখন লগইন করুন।', 'success');
+                document.getElementById('registration-form').reset();
+
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+
+            } catch (error) {
+                let errorMessage = 'রেজিস্ট্রেশন ব্যর্থ হয়েছে। দয়া করে আবার চেষ্টা করুন।';
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'এই ইমেইল দিয়ে ইতিমধ্যে অ্যাকাউন্ট আছে।';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'বৈধ ইমেইল ঠিকানা দিন।';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'পাসওয়ার্ডটি খুব দুর্বল। আরও শক্তিশালী পাসওয়ার্ড দিন।';
+                }
+                showMessage('reg-message', errorMessage, 'error');
+                console.error("Registration error:", error);
             }
-            if (number && numberExists) {
-                 showMessage('reg-message', 'এই ফোন নাম্বার দিয়ে ইতিমধ্যে অ্যাকাউন্ট আছে।', 'error');
-                 return;
-            }
-
-            const uniqueId = email; 
-            const referralCode = generateReferralCode();
-
-            users[uniqueId] = {
-                name: name,
-                email: email,
-                number: number,
-                password: password, 
-                referralCode: referralCode,
-                referredBy: null,
-                balance: 0.00,
-                miningSpeed: 10, 
-                lastMiningTime: Date.now(), 
-                referralCount: 0,
-                taskClaimed: false 
-            };
-            localStorage.setItem('registeredUsers', JSON.stringify(users));
-
-            showMessage('reg-message', 'রেজিস্ট্রেশন সফল হয়েছে! এখন লগইন করুন।', 'success');
-            document.getElementById('registration-form').reset(); 
-
-            setTimeout(() => {
-                window.location.href = 'login.html'; // Redirect to dedicated login page
-            }, 1500);
-        }
+        });
     </script>
 </body>
 </html>
