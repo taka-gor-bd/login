@@ -81,7 +81,7 @@
         }
         .balance-display {
             font-family: 'Fredoka One', cursive; /* Funky font for balance */
-            font-size: 3.5em; /* Large balance display */
+            font-size: 2.8em; /* Adjusted font size for balance - Smaller */
             font-weight: 700;
             color: var(--main-red); /* Red balance as per image */
             display: flex;
@@ -174,6 +174,8 @@
             white-space: nowrap;
             height: 100%; /* Fill parent height */
             box-sizing: border-box;
+            /* Added min-width to ensure button doesn't shrink too much */
+            min-width: 80px; /* Adjust as needed */
         }
         .input-group-custom button:hover {
             background-color: var(--dark-red);
@@ -298,7 +300,7 @@
             <h3>Balance</h3>
             <div class="balance-display">
                 <span class="taka-icon">৳</span>
-                <span id="current-balance" class="balance-amount">00.00</span>
+                <span id="current-balance" class="balance-amount">00.00.000</span>
             </div>
             <p class="speed-level">Speed Level: <span id="mining-speed-display">10%</span></p>
             <div class="user-info">
@@ -336,57 +338,87 @@
         <i class="fas fa-question"></i>
     </a>
 
-    <script>
-        const users = JSON.parse(localStorage.getItem('registeredUsers')) || {};
-        let loggedInUserEmail = localStorage.getItem('loggedInUserEmail'); // Get current logged in user
-        let miningInterval; // To control the mining timer
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getDatabase, ref, get, update, query, orderByValue, equalTo } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-        // Redirect if not logged in
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!loggedInUserEmail || !users[loggedInUserEmail]) {
-                window.location.href = 'login.html'; // Redirect to login if not authenticated
-                return;
-            }
-            // If logged in, populate data and start mining
-            updateHomePageData();
-            startMining();
-        });
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyA0nwj-qooOderNiLvmILB-gIPouy2HG4c",
+          authDomain: "takagorbd.firebaseapp.com",
+          databaseURL: "https://takagorbd-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "takagorbd",
+          storageBucket: "takagorbd.firebasestorage.app",
+          messagingSenderId: "531548262665",
+          appId: "1:531548262665:web:85fb34ea635dae7ddc43d8",
+          measurementId: "G-TZB0NHKYGY"
+        };
 
-        function showMessage(elementId, msg, type) {
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+
+        let currentUserUid = null;
+        let miningInterval;
+
+        // Global functions for HTML access
+        window.showMessage = function(elementId, msg, type) {
             const messageElement = document.getElementById(elementId);
             messageElement.textContent = msg;
             messageElement.className = `message message-${type}`;
             messageElement.style.display = 'block';
             setTimeout(() => {
-                hideMessage(elementId);
+                window.hideMessage(elementId);
             }, 5000);
-        }
+        };
 
-        function hideMessage(elementId = null) {
+        window.hideMessage = function(elementId = null) {
             if (elementId) {
                 document.getElementById(elementId).style.display = 'none';
             }
+        };
+
+        // Check auth state on page load
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                loadUserDataAndStartMining();
+            } else {
+                // User is signed out, redirect to login page
+                window.location.href = 'login.html';
+            }
+        });
+
+        async function loadUserDataAndStartMining() {
+            if (!currentUserUid) return;
+
+            try {
+                const userRef = ref(database, 'users/' + currentUserUid);
+                const snapshot = await get(userRef);
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    updateHomePageData(userData);
+                    startMining(userData); // Pass initial user data to start mining
+                } else {
+                    console.error("User data not found in database.");
+                    logout(); // Force logout if user data is missing
+                }
+            } catch (error) {
+                console.error("Error loading user data:", error);
+                logout(); // Force logout on error
+            }
         }
 
-        function logout() {
-            loggedInUserEmail = null;
-            localStorage.removeItem('loggedInUserEmail');
-            clearInterval(miningInterval); // Stop mining on logout
-            window.location.href = 'login.html'; // Redirect to login page
-        }
-
-        function updateHomePageData() {
-            if (!loggedInUserEmail || !users[loggedInUserEmail]) return;
-
-            const currentUser = users[loggedInUserEmail];
-            document.getElementById('user-name-display').textContent = currentUser.name;
-            document.getElementById('current-balance').textContent = currentUser.balance.toFixed(2);
-            document.getElementById('mining-speed-display').textContent = `${currentUser.miningSpeed}%`;
-            document.getElementById('user-refer-code').textContent = currentUser.referralCode;
-            document.getElementById('referred-count').textContent = currentUser.referralCount;
+        function updateHomePageData(userData) {
+            document.getElementById('user-name-display').textContent = userData.name;
+            document.getElementById('mining-speed-display').textContent = `${userData.miningSpeed || 10}%`; // Default 10% if not set
+            document.getElementById('user-refer-code').textContent = userData.referralCode;
+            document.getElementById('referred-count').textContent = userData.referralCount || 0;
 
             const claimBtn = document.getElementById('task-claim-btn');
-            if (currentUser.taskClaimed) {
+            if (userData.taskClaimed) {
                 claimBtn.textContent = 'Claimed';
                 claimBtn.disabled = true;
                 claimBtn.style.backgroundColor = '#ccc';
@@ -397,48 +429,90 @@
             }
         }
 
-        function startMining() {
-            if (!loggedInUserEmail || !users[loggedInUserEmail]) return;
-
+        async function startMining(initialUserData) {
             if (miningInterval) {
                 clearInterval(miningInterval);
             }
 
-            const currentUser = users[loggedInUserEmail];
-            const dailyEarnings = 10; 
+            let currentUserData = initialUserData;
+            const balanceDisplay = document.getElementById('current-balance');
+            const dailyEarnings = 10; // 10 BDT per 24 hours
             const millisecondsPerDay = 24 * 60 * 60 * 1000;
-            
-            // Calculate initial earnings from last mining time (handle first time login/mining)
+            const updateFrequency = 100; // Update every 100 milliseconds for smooth animation
+
+            // Calculate earnings from last session
             const now = Date.now();
-            const timeElapsed = now - (currentUser.lastMiningTime || now); // If no lastMiningTime, use now
-            const earningsToAdd = (timeElapsed / millisecondsPerDay) * dailyEarnings * (currentUser.miningSpeed / 100);
-            currentUser.balance += earningsToAdd;
-            currentUser.lastMiningTime = now; // Update last mining time for next calculation
+            // Ensure lastMiningTime exists and is a number, otherwise use current time
+            const lastTime = typeof currentUserData.lastMiningTime === 'number' ? currentUserData.lastMiningTime : now;
+            const timeElapsedSinceLastLogin = now - lastTime;
 
-            localStorage.setItem('registeredUsers', JSON.stringify(users));
-            updateHomePageData();
+            const earningsToAdd = (timeElapsedSinceLastLogin / millisecondsPerDay) * dailyEarnings * (currentUserData.miningSpeed / 100);
+            currentUserData.balance = parseFloat(((currentUserData.balance || 0) + earningsToAdd).toFixed(6)); // Add and fix to 6 decimal places
+            currentUserData.lastMiningTime = now;
 
-            // Set interval for continuous balance update (every 100ms for smooth animation)
-            miningInterval = setInterval(() => {
-                if (!loggedInUserEmail || !users[loggedInUserEmail]) {
+            // Update database with calculated earnings
+            await update(ref(database, 'users/' + currentUserUid), {
+                balance: currentUserData.balance, // Store with high precision
+                lastMiningTime: currentUserData.lastMiningTime
+            });
+
+            // Start continuous mining
+            miningInterval = setInterval(async () => {
+                if (!currentUserUid) {
                     clearInterval(miningInterval);
                     return;
                 }
-                const user = users[loggedInUserEmail];
-                const now = Date.now();
-                const timeSinceLastUpdate = now - user.lastMiningTime;
 
-                // Calculate earnings based on the actual time elapsed since last update
-                const incrementalEarnings = (timeSinceLastUpdate / millisecondsPerDay) * dailyEarnings * (user.miningSpeed / 100);
-                user.balance += incrementalEarnings;
-                user.lastMiningTime = now; // Update last mining time
+                // Fetch the latest user data to ensure accuracy
+                const userRef = ref(database, 'users/' + currentUserUid);
+                const snapshot = await get(userRef);
+                if (!snapshot.exists()) {
+                    clearInterval(miningInterval);
+                    window.logout(); // Use window.logout for global access
+                    return;
+                }
+                currentUserData = snapshot.val(); // Get latest data
 
-                localStorage.setItem('registeredUsers', JSON.stringify(users));
-                document.getElementById('current-balance').textContent = user.balance.toFixed(2); // Update display with 2 decimal places
-            }, 100); // Update every 100 milliseconds for a smoother "mining" effect
+                const currentNow = Date.now();
+                const timeSinceLastUpdate = currentNow - currentUserData.lastMiningTime;
+
+                // Calculate incremental earnings based on the actual time elapsed since last update
+                const incrementalEarnings = (timeSinceLastUpdate / millisecondsPerDay) * dailyEarnings * (currentUserData.miningSpeed / 100);
+                currentUserData.balance = parseFloat(((currentUserData.balance || 0) + incrementalEarnings).toFixed(6));
+                currentUserData.lastMiningTime = currentNow;
+
+                // Update database
+                await update(userRef, {
+                    balance: currentUserData.balance, // Store with high precision
+                    lastMiningTime: currentUserData.lastMiningTime
+                });
+                
+                // Update display immediately (Frontend animation)
+                const totalBalance = currentUserData.balance;
+                const taka = Math.floor(totalBalance);
+                const paisa = Math.floor((totalBalance * 100) % 100);
+                const subPaisa = Math.floor((totalBalance * 1000) % 10); // First digit after paisa
+
+                const formattedPaisa = paisa.toString().padStart(2, '0');
+                const formattedSubPaisa = subPaisa.toString().padStart(1, '0') + '00'; // Ensure 3 digits for subPaisa part
+
+                balanceDisplay.textContent = `${taka.toString().padStart(2, '0')}.${formattedPaisa}.${formattedSubPaisa}`;
+
+            }, updateFrequency);
         }
 
-        function copyReferralCode() {
+
+        window.logout = async function() {
+            try {
+                clearInterval(miningInterval); // Stop mining
+                await signOut(auth);
+                // Redirect will be handled by onAuthStateChanged listener
+            } catch (error) {
+                console.error("Error logging out:", error);
+            }
+        };
+
+        window.copyReferralCode = function() {
             const referralCodeElement = document.getElementById('user-refer-code');
             const textArea = document.createElement('textarea');
             textArea.value = referralCodeElement.textContent;
@@ -447,10 +521,10 @@
             document.execCommand('copy');
             textArea.remove();
             showMessage('referral-message', 'রেফার কোড কপি হয়েছে!', 'success');
-        }
+        };
 
-        function submitReferralCode() {
-            if (!loggedInUserEmail || !users[loggedInUserEmail]) {
+        window.submitReferralCode = async function() {
+            if (!currentUserUid) {
                 showMessage('referral-message', 'রেফার কোড সাবমিট করতে প্রথমে লগইন করুন।', 'error');
                 return;
             }
@@ -461,91 +535,129 @@
                 return;
             }
 
-            const currentUser = users[loggedInUserEmail];
-            if (currentUser.referredBy) {
+            const currentUserRef = ref(database, 'users/' + currentUserUid);
+            const currentUserSnapshot = await get(currentUserRef);
+            const currentUserData = currentUserSnapshot.val();
+
+            if (currentUserData.referredBy) {
                 showMessage('referral-message', 'আপনি ইতিমধ্যে একটি রেফার কোড ব্যবহার করেছেন।', 'error');
                 return;
             }
-            if (currentUser.referralCode === submittedCode) {
+            if (currentUserData.referralCode === submittedCode) {
                 showMessage('referral-message', 'আপনি নিজের রেফার কোড ব্যবহার করতে পারবেন না।', 'error');
                 return;
             }
 
-            let referrerFound = false;
-            for (const email in users) {
-                if (users[email].referralCode === submittedCode) {
-                    const referrerUser = users[email];
+            try {
+                // Find referrer UID by referral code
+                // Use a query on the referralCodes node where the value (UID) matches
+                const referralCodeRef = ref(database, 'referralCodes');
+                const referralCodeQuery = query(referralCodeRef, orderByValue(), equalTo(currentUserUid)); // No, this finds YOUR referral code.
+                
+                // Correct query: Find the UID associated with the submittedCode
+                const referrerUidSnapshot = await get(ref(database, 'referralCodes/' + submittedCode));
+                let referrerUid = null;
+                if (referrerUidSnapshot.exists()) {
+                    referrerUid = referrerUidSnapshot.val(); // Get the UID from the submittedCode path
+                }
+
+                if (referrerUid && referrerUid !== currentUserUid) { // Ensure not self-referral
+                    const referrerUserRef = ref(database, 'users/' + referrerUid);
+                    const referrerUserSnapshot = await get(referrerUserRef);
+                    const referrerUserData = referrerUserSnapshot.val();
+
+                    // Update current user's data
+                    await update(currentUserRef, {
+                        referredBy: referrerUid,
+                        miningSpeed: (currentUserData.miningSpeed || 10) + 10, // User gets 10% speed bonus
+                        balance: parseFloat(((currentUserData.balance || 0) + 50).toFixed(6)) // User gets 50 BDT bonus
+                    });
+
+                    // Update referrer's data
+                    await update(referrerUserRef, {
+                        referralCount: (referrerUserData.referralCount || 0) + 1,
+                        miningSpeed: (referrerUserData.miningSpeed || 10) + 1 // Referrer gets 1% speed bonus per referral
+                    });
                     
-                    currentUser.referredBy = email;
-                    currentUser.miningSpeed += 10; 
-                    currentUser.balance += 50; 
-                    
-                    referrerUser.referralCount = (referrerUser.referralCount || 0) + 1;
-                    referrerUser.miningSpeed += 1; 
-                    
-                    localStorage.setItem('registeredUsers', JSON.stringify(users));
-                    updateHomePageData();
+                    // Reload user data and restart mining to apply changes
+                    await loadUserDataAndStartMining();
                     showMessage('referral-message', `রেফার কোড সফলভাবে সাবমিট হয়েছে! আপনি ৫০ টাকা বোনাস পেয়েছেন এবং মাইনিং স্পিড ১০% বেড়েছে!`, 'success');
                     document.getElementById('submit-refer-code').value = '';
-                    referrerFound = true;
-                    
-                    startMining(); // Restart mining to apply new speed immediately
-                    break;
+                } else {
+                    showMessage('referral-message', 'অকার্যকর রেফার কোড।', 'error');
                 }
+            } catch (error) {
+                console.error("Error submitting referral code:", error);
+                showMessage('referral-message', 'রেফার কোড সাবমিট করতে সমস্যা হয়েছে।', 'error');
             }
+        };
 
-            if (!referrerFound) {
-                showMessage('referral-message', 'অকার্যকর রেফার কোড।', 'error');
-            }
-        }
-
-        function claimTask() {
-            if (!loggedInUserEmail || !users[loggedInUserEmail]) {
+        window.claimTask = async function() {
+            if (!currentUserUid) {
                 showMessage('task-message', 'টাস্ক ক্লেইম করতে প্রথমে লগইন করুন।', 'error');
                 return;
             }
-            const currentUser = users[loggedInUserEmail];
-            if (currentUser.taskClaimed) {
+
+            const currentUserRef = ref(database, 'users/' + currentUserUid);
+            const currentUserSnapshot = await get(currentUserRef);
+            const currentUserData = currentUserSnapshot.val();
+
+            if (currentUserData.taskClaimed) {
                 showMessage('task-message', 'আপনি ইতিমধ্যে এই টাস্কটি ক্লেইম করেছেন।', 'error');
                 return;
             }
 
-            currentUser.balance += 10; 
-            currentUser.taskClaimed = true; 
+            try {
+                await update(currentUserRef, {
+                    balance: parseFloat(((currentUserData.balance || 0) + 10).toFixed(6)), // 10 BDT bonus
+                    taskClaimed: true
+                });
+                
+                // Reload user data and restart mining to apply changes
+                await loadUserDataAndStartMining();
+                showMessage('task-message', 'টাস্ক বোনাস সফলভাবে ক্লেইম করা হয়েছে! ১০ টাকা আপনার ব্যালেন্সে যোগ হয়েছে।', 'success');
 
-            localStorage.setItem('registeredUsers', JSON.stringify(users));
-            updateHomePageData();
-            showMessage('task-message', 'টাস্ক বোনাস সফলভাবে ক্লেইম করা হয়েছে! ১০ টাকা আপনার ব্যালেন্সে যোগ হয়েছে।', 'success');
-
-            const claimBtn = document.getElementById('task-claim-btn');
-            claimBtn.textContent = 'Claimed';
-            claimBtn.disabled = true;
-            claimBtn.style.backgroundColor = '#ccc';
-        }
+                const claimBtn = document.getElementById('task-claim-btn');
+                claimBtn.textContent = 'Claimed';
+                claimBtn.disabled = true;
+                claimBtn.style.backgroundColor = '#ccc';
+            } catch (error) {
+                console.error("Error claiming task:", error);
+                showMessage('task-message', 'টাস্ক ক্লেইম করতে সমস্যা হয়েছে।', 'error');
+            }
+        };
 
         // Add event listener to the task image/text to simulate starting task
         document.querySelector('.task-details').addEventListener('click', function() {
-            if (!loggedInUserEmail || !users[loggedInUserEmail]) {
+            if (!currentUserUid) {
                 showMessage('task-message', 'টাস্ক সম্পূর্ণ করতে প্রথমে লগইন করুন।', 'error');
                 return;
             }
-            if (!users[loggedInUserEmail].taskClaimed) {
-                window.open('https://t.me/Taka_GorBD', '_blank'); 
-                
-                // Simulate task completion after some delay, then enable claim button
-                setTimeout(() => {
-                    const claimBtn = document.getElementById('task-claim-btn');
-                    if (!users[loggedInUserEmail].taskClaimed) { // Check again if not already claimed
-                        claimBtn.disabled = false;
-                        claimBtn.textContent = 'Claim Now!';
-                        claimBtn.style.backgroundColor = 'var(--green-claim)';
-                        showMessage('task-message', 'আপনি এখন টাস্ক বোনাস ক্লেইম করতে পারবেন।', 'success');
-                    }
-                }, 3000); 
-            } else {
+            // Temporarily disable click if task already claimed
+            const claimBtn = document.getElementById('task-claim-btn');
+            if (claimBtn.disabled) {
                 showMessage('task-message', 'আপনি ইতিমধ্যে এই টাস্কটি ক্লেইম করেছেন।', 'error');
+                return;
             }
+
+            window.open('https://t.me/Taka_GorBD', '_blank'); 
+            
+            // Simulate task completion after some delay, then enable claim button
+            setTimeout(() => {
+                // Re-check if it's still not claimed to avoid race conditions
+                if (currentUserUid && !document.getElementById('task-claim-btn').disabled) { // Check if disabled by Firebase update
+                    const currentUserRef = ref(database, 'users/' + currentUserUid);
+                    get(currentUserRef).then(snapshot => {
+                        if (snapshot.exists() && !snapshot.val().taskClaimed) {
+                            claimBtn.disabled = false;
+                            claimBtn.textContent = 'Claim Now!';
+                            claimBtn.style.backgroundColor = 'var(--green-claim)';
+                            showMessage('task-message', 'আপনি এখন টাস্ক বোনাস ক্লেইম করতে পারবেন।', 'success');
+                        }
+                    });
+                }
+            }, 3000); 
         });
     </script>
 </body>
-  </html>
+    </html>
