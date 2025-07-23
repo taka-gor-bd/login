@@ -239,7 +239,7 @@
             </div>
         </div>
         <div class="form-card">
-            <form id="login-form" onsubmit="handleLogin(event)">
+            <form id="login-form">
                 <div class="form-group">
                     <input type="text" id="login-email-number" class="input-field" placeholder="Email - Number" required>
                 </div>
@@ -263,10 +263,28 @@
         <i class="fas fa-question"></i>
     </a>
 
-    <script>
-        const users = JSON.parse(localStorage.getItem('registeredUsers')) || {};
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyA0nwj-qooOderNiLvmILB-gIPouy2HG4c",
+          authDomain: "takagorbd.firebaseapp.com",
+          databaseURL: "https://takagorbd-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "takagorbd",
+          storageBucket: "takagorbd.firebasestorage.app",
+          messagingSenderId: "531548262665",
+          appId: "1:531548262665:web:85fb34ea635dae7ddc43d8",
+          measurementId: "G-TZB0NHKYGY"
+        };
 
-        function togglePasswordVisibility(id, button) {
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Global functions for HTML access
+        window.togglePasswordVisibility = function(id, button) {
             const input = document.getElementById(id);
             if (input.type === 'password') {
                 input.type = 'text';
@@ -275,51 +293,58 @@
                 input.type = 'password';
                 button.innerHTML = '<i class="fas fa-eye"></i>';
             }
-        }
+        };
 
-        function showMessage(elementId, msg, type) {
+        window.showMessage = function(elementId, msg, type) {
             const messageElement = document.getElementById(elementId);
             messageElement.textContent = msg;
             messageElement.className = `message message-${type}`;
             messageElement.style.display = 'block';
             setTimeout(() => {
-                hideMessage(elementId);
+                window.hideMessage(elementId);
             }, 5000);
-        }
+        };
 
-        function hideMessage(elementId = null) {
+        window.hideMessage = function(elementId = null) {
             if (elementId) {
                 document.getElementById(elementId).style.display = 'none';
             }
-        }
+        };
 
-        function handleLogin(event) {
+        // Check auth state on load
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, redirect to home page
+                window.location.href = 'home.html';
+            }
+            // If no user, stay on login page
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async (event) => {
             event.preventDefault();
 
             const identifier = document.getElementById('login-email-number').value.trim();
             const password = document.getElementById('login-password').value;
-            
-            let userFound = false;
-            for (const email in users) {
-                const user = users[email];
-                if ((user.email === identifier || user.number === identifier) && user.password === password) {
-                    // Store logged in user's email/number to localStorage
-                    localStorage.setItem('loggedInUserEmail', email); 
-                    showMessage('login-message', 'লগইন সফল! আপনাকে স্বাগতম।', 'success');
-                    
-                    // Redirect to home page
-                    setTimeout(() => {
-                        window.location.href = 'home.html';
-                    }, 1000);
-                    userFound = true;
-                    break;
-                }
-            }
 
-            if (!userFound) {
-                showMessage('login-message', 'ইমেইল/নাম্বার অথবা পাসওয়ার্ড ভুল।', 'error');
+            try {
+                // Try to sign in with email/password
+                await signInWithEmailAndPassword(auth, identifier, password);
+                // Redirect will be handled by onAuthStateChanged listener
+                showMessage('login-message', 'লগইন সফল! আপনাকে স্বাগতম।', 'success');
+
+            } catch (error) {
+                let errorMessage = 'লগইন ব্যর্থ হয়েছে। দয়া করে আবার চেষ্টা করুন।';
+                if (error.code === 'auth/wrong-password') {
+                    errorMessage = 'পাসওয়ার্ড ভুল হয়েছে।';
+                } else if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
+                    errorMessage = 'এই ইমেইল দিয়ে কোনো অ্যাকাউন্ট খুঁজে পাওয়া যায়নি।';
+                } else if (error.code === 'auth/user-disabled') {
+                    errorMessage = 'আপনার অ্যাকাউন্টটি নিষ্ক্রিয় করা হয়েছে।';
+                }
+                showMessage('login-message', errorMessage, 'error');
+                console.error("Login error:", error);
             }
-        }
+        });
     </script>
 </body>
 </html>
