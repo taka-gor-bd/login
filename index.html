@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taka Gor - স্বাগতম</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2E86AB; /* ডার্ক ব্লু */
+            --secondary-bg: #f6f5f5;  /* হালকা গ্রে/হোয়াইট */
+            --white-bg: #ffffff;
+            --accent-orange: #F26419; /* অরেঞ্জ */
+            --accent-green: #28A745;  /* গ্রিন */
+            --text-dark: #333;
+            --text-light: #555;
+            --border-light: #ddd;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #4a9ec0 100%);
+            margin: 0;
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header .logo-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900; /* আরও বোল্ড */
+            font-size: 2.5em; /* বড় ফন্ট সাইজ */
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 60px 20px;
+            flex-grow: 1; /* কন্টেন্টের মাঝখানে রাখতে */
+        }
+        .hero-section h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        .hero-section p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            max-width: 600px;
+            opacity: 0.9;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .cta-buttons a {
+            background-color: var(--accent-orange);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .cta-buttons a:hover {
+            background-color: #d15a15;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        .cta-buttons a.login-btn {
+            background-color: var(--accent-green);
+        }
+        .cta-buttons a.login-btn:hover {
+            background-color: #218838;
+        }
+
+        .features-section {
+            background-color: var(--secondary-bg);
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .features-section h2 {
+            margin-bottom: 40px;
+            color: var(--primary-color);
+            font-size: 2em;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .feature-box {
+            background-color: var(--white-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px var(--shadow-medium);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .feature-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+        }
+        .feature-box .icon {
+            font-size: 3.5em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        .feature-box h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.5em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .feature-box p {
+            color: var(--text-light);
+            font-size: 1em;
+        }
+
+        .footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 0.9em;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+        }
+        .footer p {
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header .logo-name {
+                font-size: 2em;
+            }
+            .hero-section {
+                padding: 40px 20px;
+            }
+            .hero-section h1 {
+                font-size: 2em;
+            }
+            .hero-section p {
+                font-size: 1em;
+            }
+            .cta-buttons a {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+            .features-section {
+                padding: 40px 20px;
+            }
+            .features-section h2 {
+                font-size: 1.8em;
+                margin-bottom: 30px;
+            }
+            .feature-box {
+                padding: 25px;
+            }
+            .feature-box .icon {
+                font-size: 3em;
+            }
+            .feature-box h3 {
+                font-size: 1.3em;
+            }
+            .feature-box p {
+                font-size: 0.9em;
+            }
+            .footer {
+                padding: 20px;
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-name">Taka Gor</div>
+    </div>
+
+    <div class="hero-section">
+        <h1>সহজেই আয় করুন,<br>আপনার মোবাইলেই!</h1>
+        <p>Taka Gor এ যোগ দিন এবং নিরাপদ ও সুবিধাজনক উপায়ে টাকা উপার্জন শুরু করুন।</p>
+        <div class="cta-buttons">
+            <a href="login.html" class="login-btn">লগইন করুন</a>
+            <a href="registration.html">রেজিস্ট্রেশন করুন</a>
+        </div>
+    </div>
+
+    <div class="features-section">
+        <h2>কেন Taka Gor?</h2>
+        <div class="features-grid">
+            <div class="feature-box">
+                <i class="fas fa-dollar-sign icon"></i>
+                <h3>সহজ আয়</h3>
+                <p>আমাদের বিভিন্ন প্ল্যানের মাধ্যমে ঘরে বসেই খুব সহজে আয় করুন।</p>
+            </div>
+            <div class="feature-box">
+                <i class="fas fa-hand-holding-usd icon"></i>
+                <h3>নিরাপদ উত্তোলন</h3>
+                <p>আপনার উপার্জিত অর্থ দ্রুত এবং নিরাপদে উত্তোলন করুন আপনার পছন্দের পদ্ধতিতে।</p>
+            </div>
+            <div class="feature-box">
+                <i class="fas fa-users icon"></i>
+                <h3>শক্তিশালী রেফারেল</h3>
+                <p>বন্ধুদের আমন্ত্রণ জানান এবং মাল্টি-লেভেল রেফারেল বোনাস উপভোগ করুন।</p>
+            </div>
+            <div class="feature-box">
+                <i class="fas fa-headset icon"></i>
+                <h3>২৪/৭ সাপোর্ট</h3>
+                <p>আমাদের ডেডিকেটেড সাপোর্ট টিম আপনার সকল জিজ্ঞাসার জন্য প্রস্তুত।</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Taka Gor. সর্বস্বত্ব সংরক্ষিত।</p>
+    </div>
+</body>
+  </html>
