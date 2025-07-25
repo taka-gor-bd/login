@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taka Gor - ইউজার ম্যানেজমেন্ট</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E86AB;
+            --secondary-bg: #f6f5f5;
+            --white-bg: #ffffff;
+            --accent-orange: #F26419;
+            --accent-green: #28A745;
+            --text-dark: #333;
+            --text-light: #555;
+            --border-light: #ddd;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --status-active: #28A745;
+            --status-inactive: #dc3545;
+            --info-bg: #e0f2f7;
+            --warning-bg: #fff3cd;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-bg);
+            margin: 0;
+            color: var(--text-dark);
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header .logo-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .header .logout-btn {
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+        .header .logout-btn:hover {
+            background-color: #d85213;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: calc(100vh - 68px);
+            flex-direction: column; /* মোবাইল স্ক্রিনে কলাম লেআউট */
+        }
+
+        .sidebar {
+            width: 100%;
+            background-color: var(--white-bg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            flex-shrink: 0;
+            border-bottom: 3px solid transparent;
+        }
+
+        .sidebar a .material-icons {
+            margin-bottom: 4px;
+            font-size: 20px;
+            color: #777;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: var(--info-bg);
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .sidebar a.active .material-icons {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 15px;
+            background-color: var(--secondary-bg);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        .section-card {
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 12px var(--shadow-medium);
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-card h3 {
+            color: var(--primary-color);
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .search-bar input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.95em;
+            box-sizing: border-box;
+            min-width: 150px;
+        }
+        .search-bar button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        .search-bar button:hover {
+            background-color: #226b8a;
+        }
+
+
+        /* User List Table (Responsive) */
+        .user-list-container {
+            overflow-x: auto; /* Horizontal scroll for table on small screens */
+            -webkit-overflow-scrolling: touch;
+            border-radius: 10px;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: separate; /* For rounded corners on cells */
+            border-spacing: 0;
+            min-width: 600px; /* Minimum width for table to prevent too much squishing */
+        }
+
+        .user-table thead {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        .user-table th, .user-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-light);
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .user-table th:first-child { border-top-left-radius: 10px; }
+        .user-table th:last-child { border-top-right-radius: 10px; }
+
+        .user-table tbody tr {
+            background-color: var(--white-bg);
+            transition: background-color 0.2s ease;
+        }
+        .user-table tbody tr:hover {
+            background-color: var(--info-bg);
+        }
+        .user-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-table td {
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        .user-table td.email {
+            font-size: 0.8em; /* Email might be long */
+            color: var(--text-light);
+        }
+
+        .balance-amounts {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 0.85em;
+        }
+        .balance-amounts span {
+            display: block;
+            font-weight: 500;
+        }
+        .balance-amounts .main { color: var(--primary-color); }
+        .balance-amounts .income { color: var(--accent-green); }
+        .balance-amounts .referral { color: var(--accent-orange); }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: white;
+            white-space: nowrap;
+        }
+        .status-badge.active { background-color: var(--status-active); }
+        .status-badge.inactive { background-color: var(--status-inactive); }
+        .status-badge.blocked { background-color: #6c757d; } /* Grey for blocked */
+        .status-badge.unblocked { background-color: var(--status-active); }
+
+
+        .action-buttons-td button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-right: 5px;
+            white-space: nowrap;
+        }
+        .action-buttons-td button:hover {
+            background-color: #226b8a;
+            transform: translateY(-1px);
+        }
+        .action-buttons-td button:last-child {
+            margin-right: 0;
+        }
+        .action-buttons-td button.block-btn { background-color: var(--status-inactive); }
+        .action-buttons-td button.block-btn:hover { background-color: #c82333; }
+        .action-buttons-td button.unblock-btn { background-color: var(--accent-green); }
+        .action-buttons-td button.unblock-btn:hover { background-color: #218838; }
+
+
+        .no-users-message {
+            text-align: center;
+            color: var(--text-light);
+            padding: 30px;
+            font-size: 1em;
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px var(--shadow-light);
+            margin-top: 20px;
+            display: none; /* JS will control visibility */
+        }
+
+        /* Modal for editing balance */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 10000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--white-bg);
+            margin: auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px var(--shadow-medium);
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            animation: fadeInScale 0.3s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--text-dark);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h3 {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-light);
+            text-align: center;
+        }
+
+        .modal-content .input-group {
+            margin-bottom: 15px;
+        }
+        .modal-content input[type="number"] {
+            margin-bottom: 5px; /* Adjust spacing */
+        }
+        .modal-content button {
+            background-color: var(--accent-green);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-content button:hover:not(:disabled) {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .modal-content button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+
+        /* Desktop Styles */
+        @media (min-width: 768px) {
+            .admin-layout {
+                flex-direction: row;
+            }
+            .sidebar {
+                width: 250px;
+                flex-direction: column;
+                padding: 20px 0;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+                border-bottom: none;
+            }
+            .sidebar a {
+                padding: 15px 20px;
+                flex-direction: row;
+                font-size: 1em;
+                border-bottom: none;
+                border-left: 5px solid transparent;
+            }
+            .sidebar a .material-icons {
+                margin-right: 15px;
+                margin-bottom: 0;
+                font-size: 24px;
+            }
+            .sidebar a:hover, .sidebar a.active {
+                border-bottom: none;
+                border-left-color: var(--primary-color);
+            }
+            .main-content {
+                padding: 30px;
+            }
+            h2 {
+                font-size: 2.2em;
+                text-align: left; /* Desktop heading alignment */
+            }
+            .section-card {
+                padding: 30px;
+            }
+            .section-card h3 {
+                font-size: 1.8em;
+                text-align: left;
+            }
+            .search-bar {
+                flex-wrap: nowrap;
+            }
+            .user-table {
+                min-width: 700px; /* Adjust as needed for desktop */
+            }
+            .user-table th, .user-table td {
+                padding: 15px 20px;
+            }
+            .user-table td {
+                font-size: 0.95em;
+            }
+            .user-table td.email {
+                font-size: 0.85em;
+            }
+            .balance-amounts {
+                font-size: 0.9em;
+            }
+            .status-badge {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+            .action-buttons-td button {
+                padding: 9px 14px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-name">Taka Gor (অ্যাডমিন)</div>
+        <button class="logout-btn" id="admin-logout-button">লগআউট</button>
+    </div>
+
+    <div class="admin-layout">
+        <div class="sidebar">
+            <a href="admin_dashboard.html"><span class="material-icons">dashboard</span> ড্যাশবোর্ড</a>
+            <a href="admin_user_management.html" class="active"><span class="material-icons">people</span> ইউজার ম্যানেজমেন্ট</a>
+            <a href="admin_deposit_requests.html"><span class="material-icons">inbox</span> ডিপোজিট রিকোয়েস্ট</a>
+            <a href="admin_withdrawal_requests.html"><span class="material-icons">outbox</span> উইথড্র রিকোয়েস্ট</a>
+            <a href="admin_plan_management.html"><span class="material-icons">category</span> প্ল্যান ম্যানেজমেন্ট</a>
+            <a href="admin_settings.html"><span class="material-icons">settings</span> সেটিংস</a>
+        </div>
+
+        <div class="main-content">
+            <h2>ইউজার ম্যানেজমেন্ট</h2>
+
+            <div class="section-card">
+                <h3>ইউজার তালিকা</h3>
+                <div class="search-bar">
+                    <input type="text" id="user-search-input" placeholder="নাম, ইমেইল বা ফোন দিয়ে খুঁজুন...">
+                    <button id="search-user-button">অনুসন্ধান</button>
+                </div>
+
+                <div class="user-list-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>নাম</th>
+                                <th>ইমেইল</th>
+                                <th>ফোন</th>
+                                <th>ব্যালেন্স</th>
+                                <th>স্ট্যাটাস</th>
+                                <th>অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table-body">
+                            </tbody>
+                    </table>
+                </div>
+                <p class="no-users-message" id="no-users-found">কোনো ইউজার পাওয়া যায়নি।</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-balance-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>ব্যালেন্স এডিট করুন</h3>
+            <p>ইউজার: <strong id="modal-user-name"></strong> (<span id="modal-user-email"></span>)</p>
+
+            <div class="input-group">
+                <label for="modal-main-balance">মেইন ব্যালেন্স</label>
+                <input type="number" id="modal-main-balance" step="any" min="0">
+            </div>
+            <div class="input-group">
+                <label for="modal-income-balance">ইনকাম ব্যালেন্স</label>
+                <input type="number" id="modal-income-balance" step="any" min="0">
+            </div>
+            <div class="input-group">
+                <label for="modal-referral-balance">রেফারেল ব্যালেন্স</label>
+                <input type="number" id="modal-referral-balance" step="any" min="0">
+            </div>
+
+            <button id="save-balance-button">
+                <span class="button-text">সেভ করুন</span>
+                <div class="loading-spinner"></div>
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase কনফিগারেশন ইম্পোর্ট করুন
+        import { auth, database } from './js/firebase_config.js';
+        import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { ref, onValue, get, set, runTransaction } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const userTableBody = document.getElementById('user-table-body');
+        const userSearchInput = document.getElementById('user-search-input');
+        const searchUserButton = document.getElementById('search-user-button');
+        const noUsersFoundMessage = document.getElementById('no-users-found');
+        const adminLogoutButton = document.getElementById('admin-logout-button');
+
+        // Modal elements
+        const editBalanceModal = document.getElementById('edit-balance-modal');
+        const closeModalButton = editBalanceModal.querySelector('.close-button');
+        const modalUserName = document.getElementById('modal-user-name');
+        const modalUserEmail = document.getElementById('modal-user-email');
+        const modalMainBalance = document.getElementById('modal-main-balance');
+        const modalIncomeBalance = document.getElementById('modal-income-balance');
+        const modalReferralBalance = document.getElementById('modal-referral-balance');
+        const saveBalanceButton = document.getElementById('save-balance-button');
+        const saveBalanceButtonText = saveBalanceButton.querySelector('.button-text');
+        const saveBalanceSpinner = saveBalanceButton.querySelector('.loading-spinner');
+
+        let allUsersData = {}; // To store all users for searching
+        let currentEditingUserUid = null; // To keep track of which user's balance is being edited
+
+        // Function to show/hide loading spinner on buttons
+        function showButtonLoading(button, textElement, spinnerElement, originalText) {
+            button.disabled = true;
+            textElement.textContent = 'লোড হচ্ছে...';
+            spinnerElement.style.display = 'block';
+        }
+
+        function hideButtonLoading(button, textElement, spinnerElement, originalText) {
+            button.disabled = false;
+            textElement.textContent = originalText;
+            spinnerElement.style.display = 'none';
+        }
+
+        // অ্যাডমিন হিসেবে লগইন করা আছে কিনা চেক করুন
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const isAdmin = await checkIfAdmin(user.uid);
+                if (isAdmin) {
+                    loadAllUsers(); // অ্যাডমিন হলে ইউজার ডেটা লোড করুন
+                } else {
+                    alert('আপনার অ্যাডমিন প্যানেলে অ্যাক্সেস নেই।');
+                    await auth.signOut();
+                    window.location.href = 'admin_login.html';
+                }
+            } else {
+                window.location.href = 'admin_login.html';
+            }
+        });
+
+        // অ্যাডমিন কিনা তা চেক করার ফাংশন
+        async function checkIfAdmin(uid) {
+            if (!uid) return false;
+            const adminRef = ref(database, 'admins/' + uid);
+            try {
+                const snapshot = await get(adminRef);
+                return snapshot.exists();
+            } catch (error) {
+                console.error("Error checking admin status:", error);
+                return false;
+            }
+        }
+
+        // সকল ইউজার ডেটা লোড করুন
+        function loadAllUsers() {
+            const usersRef = ref(database, 'users');
+            onValue(usersRef, (snapshot) => {
+                allUsersData = {}; // Reset data
+                if (snapshot.exists()) {
+                    snapshot.forEach(childSnapshot => {
+                        allUsersData[childSnapshot.key] = childSnapshot.val();
+                    });
+                }
+                displayUsers(allUsersData); // প্রাথমিকভাবে সব ইউজার দেখান
+            }, (error) => {
+                console.error("Error loading all users:", error);
+                userTableBody.innerHTML = '<tr><td colspan="6" class="no-users-message" style="display: block;">ইউজার ডেটা লোড করতে সমস্যা হয়েছে।</td></tr>';
+                noUsersFoundMessage.style.display = 'none'; // Hide the default no-users message
+            });
+        }
+
+        // ইউজারদের টেবিলে প্রদর্শন করুন
+        function displayUsers(usersToShow) {
+            userTableBody.innerHTML = ''; // টেবিল খালি করুন
+            const usersArray = Object.keys(usersToShow).map(uid => ({ uid, ...usersToShow[uid] }));
+
+            if (usersArray.length === 0) {
+                noUsersFoundMessage.style.display = 'block';
+                return;
+            } else {
+                noUsersFoundMessage.style.display = 'none';
+            }
+
+            usersArray.forEach(user => {
+                const row = userTableBody.insertRow();
+                row.innerHTML = `
+                    <td>${user.name || 'N/A'}</td>
+                    <td class="email">${user.email || 'N/A'}</td>
+                    <td>${user.phone || 'N/A'}</td>
+                    <td>
+                        <div class="balance-amounts">
+                            <span class="main">M: ৳ ${(user.mainBalance || 0).toFixed(2)}</span>
+                            <span class="income">I: ৳ ${(user.incomeBalance || 0).toFixed(2)}</span>
+                            <span class="referral">R: ৳ ${(user.referralBalance || 0).toFixed(2)}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-badge ${user.isActive ? 'active' : 'inactive'}">${user.isActive ? 'Active' : 'Inactive'}</span>
+                        <span class="status-badge ${user.isBlocked ? 'blocked' : 'unblocked'}" style="${user.isBlocked ? '' : 'display: none;'}">${user.isBlocked ? 'Blocked' : ''}</span>
+                    </td>
+                    <td class="action-buttons-td">
+                        <button class="edit-balance-btn" data-uid="${user.uid}">এডিট ব্যালেন্স</button>
+                        <button class="toggle-active-btn" data-uid="${user.uid}" data-is-active="${user.isActive}">
+                            ${user.isActive ? 'ডিঅ্যাক্টিভ করুন' : 'অ্যাক্টিভ করুন'}
+                        </button>
+                        <button class="${user.isBlocked ? 'unblock-btn' : 'block-btn'}" data-uid="${user.uid}" data-is-blocked="${user.isBlocked}">
+                            ${user.isBlocked ? 'আনব্লক করুন' : 'ব্লক করুন'}
+                        </button>
+                    </td>
+                `;
+            });
+
+            addActionButtonListeners(); // বাটনগুলোতে ইভেন্ট লিসেনার যোগ করুন
+        }
+
+        // অনুসন্ধান ফাংশন
+        searchUserButton.addEventListener('click', () => {
+            const searchTerm = userSearchInput.value.toLowerCase().trim();
+            const filteredUsers = {};
+
+            for (const uid in allUsersData) {
+                const user = allUsersData[uid];
+                if (user.name && user.name.toLowerCase().includes(searchTerm) ||
+                    user.email && user.email.toLowerCase().includes(searchTerm) ||
+                    user.phone && user.phone.includes(searchTerm)) { // Phone number exact match or partial if desired
+                    filteredUsers[uid] = user;
+                }
+            }
+            displayUsers(filteredUsers);
+        });
+
+        userSearchInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                searchUserButton.click();
+            }
+            if (userSearchInput.value.trim() === '') {
+                 displayUsers(allUsersData); // Search input cleared, show all users
+            }
+        });
+
+
+        // অ্যাকশন বাটনগুলোতে ইভেন্ট লিসেনার যোগ করুন
+        function addActionButtonListeners() {
+            document.querySelectorAll('.edit-balance-btn').forEach(button => {
+                button.addEventListener('click', (e) => openEditBalanceModal(e.target.dataset.uid));
+            });
+
+            document.querySelectorAll('.toggle-active-btn').forEach(button => {
+                button.addEventListener('click', (e) => toggleUserActiveStatus(e.target.dataset.uid, e.target.dataset.isActive === 'true'));
+            });
+
+            document.querySelectorAll('.block-btn, .unblock-btn').forEach(button => {
+                button.addEventListener('click', (e) => toggleUserBlockStatus(e.target.dataset.uid, e.target.dataset.isBlocked === 'true'));
+            });
+        }
+
+        // ইউজার অ্যাক্টিভ স্ট্যাটাস পরিবর্তন করুন
+        async function toggleUserActiveStatus(uid, currentStatus) {
+            const newStatus = !currentStatus;
+            if (confirm(`আপনি কি ইউজার ${uid} এর আইডি ${newStatus ? 'অ্যাক্টিভ' : 'ডিঅ্যাক্টিভ'} করতে চান?`)) {
+                try {
+                    await set(ref(database, `users/${uid}/isActive`), newStatus);
+                    alert(`ইউজার ${uid} এর আইডি সফলভাবে ${newStatus ? 'অ্যাক্টিভ' : 'ডিঅ্যাক্টিভ'} করা হয়েছে।`);
+                } catch (error) {
+                    console.error("Error toggling active status:", error);
+                    alert(`ইউজার ${uid} এর আইডি ${newStatus ? 'অ্যাক্টিভ' : 'ডিঅ্যাক্টিভ'} করতে সমস্যা হয়েছে।`);
+                }
+            }
+        }
+
+        // ইউজার ব্লক স্ট্যাটাস পরিবর্তন করুন
+        async function toggleUserBlockStatus(uid, currentStatus) {
+            const newStatus = !currentStatus;
+            if (confirm(`আপনি কি ইউজার ${uid} কে ${newStatus ? 'ব্লক' : 'আনব্লক'} করতে চান?`)) {
+                try {
+                    await set(ref(database, `users/${uid}/isBlocked`), newStatus);
+                    alert(`ইউজার ${uid} কে সফলভাবে ${newStatus ? 'ব্লক' : 'আনব্লক'} করা হয়েছে।`);
+                } catch (error) {
+                    console.error("Error toggling block status:", error);
+                    alert(`ইউজার ${uid} কে ${newStatus ? 'ব্লক' : 'আনব্লক'} করতে সমস্যা হয়েছে।`);
+                }
+            }
+        }
+
+
+        // ব্যালেন্স এডিট মডাল খুলুন
+        function openEditBalanceModal(uid) {
+            currentEditingUserUid = uid;
+            const user = allUsersData[uid];
+            if (user) {
+                modalUserName.textContent = user.name || 'N/A';
+                modalUserEmail.textContent = user.email || 'N/A';
+                modalMainBalance.value = (user.mainBalance || 0).toFixed(2);
+                modalIncomeBalance.value = (user.incomeBalance || 0).toFixed(2);
+                modalReferralBalance.value = (user.referralBalance || 0).toFixed(2);
+                editBalanceModal.style.display = 'flex'; // Flex to center content
+            }
+        }
+
+        // মডাল বন্ধ করুন
+        closeModalButton.addEventListener('click', () => {
+            editBalanceModal.style.display = 'none';
+            currentEditingUserUid = null;
+        });
+
+        // মডালের বাইরে ক্লিক করলে বন্ধ করুন
+        window.addEventListener('click', (event) => {
+            if (event.target == editBalanceModal) {
+                editBalanceModal.style.display = 'none';
+                currentEditingUserUid = null;
+            }
+        });
+
+        // ব্যালেন্স সেভ করুন
+        saveBalanceButton.addEventListener('click', async () => {
+            if (!currentEditingUserUid) return;
+
+            const newMainBalance = parseFloat(modalMainBalance.value);
+            const newIncomeBalance = parseFloat(modalIncomeBalance.value);
+            const newReferralBalance = parseFloat(modalReferralBalance.value);
+
+            if (isNaN(newMainBalance) || isNaN(newIncomeBalance) || isNaN(newReferralBalance) ||
+                newMainBalance < 0 || newIncomeBalance < 0 || newReferralBalance < 0) {
+                alert('বৈধ পরিমাণ লিখুন। ব্যালেন্স অবশ্যই ০ বা তার বেশি হতে হবে।');
+                return;
+            }
+
+            showButtonLoading(saveBalanceButton, saveBalanceButtonText, saveBalanceSpinner, 'সেভ করুন');
+
+            try {
+                // Use a transaction for safe update of multiple balances
+                await runTransaction(ref(database, `users/${currentEditingUserUid}`), (currentData) => {
+                    if (currentData === null) {
+                        return; // Abort if user data somehow disappears
+                    }
+                    currentData.mainBalance = newMainBalance;
+                    currentData.incomeBalance = newIncomeBalance;
+                    currentData.referralBalance = newReferralBalance;
+                    return currentData;
+                });
+
+                alert('ব্যালেন্স সফলভাবে আপডেট করা হয়েছে!');
+                editBalanceModal.style.display = 'none';
+                currentEditingUserUid = null;
+            } catch (error) {
+                console.error("Error saving balance:", error);
+                alert('ব্যালেন্স আপডেট করতে সমস্যা হয়েছে।');
+            } finally {
+                hideButtonLoading(saveBalanceButton, saveBalanceButtonText, saveBalanceSpinner, 'সেভ করুন');
+            }
+        });
+
+        // অ্যাডমিন লগআউট
+        adminLogoutButton.addEventListener('click', async () => {
+            if (confirm('আপনি কি অ্যাডমিন প্যানেল থেকে লগআউট করতে চান?')) {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'admin_login.html'; // লগইন পেজে রিডাইরেক্ট
+                } catch (error) {
+                    console.error("Error signing out:", error);
+                    alert('লগআউট করতে সমস্যা হয়েছে।');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

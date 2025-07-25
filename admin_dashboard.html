@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taka Gor - অ্যাডমিন ড্যাশবোর্ড</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E86AB;
+            --secondary-bg: #f6f5f5;
+            --white-bg: #ffffff;
+            --accent-orange: #F26419;
+            --accent-green: #28A745;
+            --text-dark: #333;
+            --text-light: #555;
+            --border-light: #ddd;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --info-bg: #e0f2f7; /* Lighter primary for info boxes */
+            --warning-bg: #fff3cd; /* For pending items */
+            --danger-bg: #f8d7da; /* For rejected/cancelled items */
+            --success-bg: #d4edda; /* For approved items */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-bg);
+            margin: 0;
+            color: var(--text-dark);
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header .logo-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .header .logout-btn {
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+        .header .logout-btn:hover {
+            background-color: #d85213;
+        }
+
+        .content {
+            padding: 15px;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8em;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 2 columns on small, more on large */
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 12px var(--shadow-light);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px var(--shadow-medium);
+        }
+
+        .stat-card .material-icons {
+            font-size: 40px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-card h4 {
+            font-size: 1.1em;
+            color: var(--text-light);
+            margin: 0 0 8px 0;
+            font-weight: 500;
+        }
+
+        .stat-card p {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        /* Specific colors for stats */
+        .stat-card.users .material-icons { color: #007bff; }
+        .stat-card.deposits .material-icons { color: var(--accent-green); }
+        .stat-card.withdrawals .material-icons { color: var(--accent-orange); }
+        .stat-card.pending .material-icons { color: #ffc107; }
+
+
+        .section-card {
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 12px var(--shadow-medium);
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-card h3 {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+
+        .admin-action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* 2-3 columns on small, more on large */
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            background-color: var(--info-bg);
+            border: 1px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .action-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            background-color: #d8edf3;
+        }
+        .action-button:active {
+            transform: translateY(0);
+        }
+        .action-button .material-icons {
+            font-size: 36px;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        /* Recent Activities Table */
+        .recent-activity-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .recent-activity-table th, .recent-activity-table td {
+            border: 1px solid var(--border-light);
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        .recent-activity-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .recent-activity-table tr:nth-child(even) {
+            background-color: var(--secondary-bg);
+        }
+
+        .recent-activity-table tbody tr:hover {
+            background-color: #e9e9e9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: white;
+        }
+        .status-badge.pending { background-color: #ffc107; color: #333; }
+        .status-badge.approved { background-color: var(--accent-green); }
+        .status-badge.rejected { background-color: var(--error-color); }
+        .status-badge.completed { background-color: #6c757d; } /* For withdrawals */
+
+        /* No data message */
+        .no-data-message {
+            text-align: center;
+            color: var(--text-light);
+            padding: 20px;
+            font-size: 1em;
+        }
+
+        /* Desktop/Tablet Styles */
+        @media (min-width: 768px) {
+            .header {
+                padding: 15px 40px;
+            }
+            .content {
+                padding: 20px 40px;
+            }
+            h2 {
+                font-size: 2.2em;
+                margin-bottom: 30px;
+            }
+            .dashboard-grid {
+                grid-template-columns: repeat(4, 1fr); /* 4 columns on desktop */
+                gap: 25px;
+            }
+            .stat-card {
+                padding: 25px;
+            }
+            .stat-card .material-icons {
+                font-size: 45px;
+            }
+            .stat-card h4 {
+                font-size: 1.2em;
+            }
+            .stat-card p {
+                font-size: 2.2em;
+            }
+            .section-card {
+                padding: 30px;
+                margin-bottom: 25px;
+            }
+            .section-card h3 {
+                font-size: 1.8em;
+            }
+            .admin-action-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* More columns on desktop */
+                gap: 20px;
+            }
+            .action-button {
+                padding: 20px;
+                font-size: 1em;
+            }
+            .action-button .material-icons {
+                font-size: 40px;
+            }
+            .recent-activity-table {
+                font-size: 1em;
+            }
+            .recent-activity-table th, .recent-activity-table td {
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-name">Taka Gor (অ্যাডমিন)</div>
+        <button class="logout-btn" id="admin-logout-button">লগআউট</button>
+    </div>
+
+    <div class="content">
+        <h2>অ্যাডমিন ড্যাশবোর্ড</h2>
+
+        <div class="dashboard-grid">
+            <div class="stat-card users">
+                <span class="material-icons">group</span>
+                <h4>মোট ইউজার</h4>
+                <p id="total-users">0</p>
+            </div>
+            <div class="stat-card deposits">
+                <span class="material-icons">attach_money</span>
+                <h4>মোট ডিপোজিট</h4>
+                <p id="total-deposits">৳ 0.00</p>
+            </div>
+            <div class="stat-card withdrawals">
+                <span class="material-icons">money_off</span>
+                <h4>মোট উইথড্র</h4>
+                <p id="total-withdrawals">৳ 0.00</p>
+            </div>
+            <div class="stat-card pending">
+                <span class="material-icons">pending_actions</span>
+                <h4>পেন্ডিং রিকোয়েস্ট</h4>
+                <p id="pending-requests">0</p>
+            </div>
+        </div>
+
+        <div class="section-card admin-actions-section">
+            <h3>দ্রুত অ্যাকশন</h3>
+            <div class="admin-action-grid">
+                <a href="admin_user_management.html" class="action-button">
+                    <span class="material-icons">manage_accounts</span>
+                    <span>ইউজার ম্যানেজমেন্ট</span>
+                </a>
+                <a href="admin_deposit_requests.html" class="action-button">
+                    <span class="material-icons">inbox</span>
+                    <span>ডিপোজিট রিকোয়েস্ট</span>
+                </a>
+                <a href="admin_withdrawal_requests.html" class="action-button">
+                    <span class="material-icons">outbox</span>
+                    <span>উইথড্র রিকোয়েস্ট</span>
+                </a>
+                <a href="admin_plan_management.html" class="action-button">
+                    <span class="material-icons">category</span>
+                    <span>প্ল্যান ম্যানেজমেন্ট</span>
+                </a>
+                <a href="admin_settings.html" class="action-button">
+                    <span class="material-icons">settings</span>
+                    <span>সেটিংস</span>
+                </a>
+                </div>
+        </div>
+
+        <div class="section-card recent-activity-section">
+            <h3>সাম্প্রতিক কার্যকলাপ</h3>
+            <div class="table-responsive">
+                <table class="recent-activity-table">
+                    <thead>
+                        <tr>
+                            <th>তারিখ</th>
+                            <th>ইউজার</th>
+                            <th>প্রকার</th>
+                            <th>পরিমাণ</th>
+                            <th>স্ট্যাটাস</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-activity-tbody">
+                        </tbody>
+                </table>
+                <p class="no-data-message" id="no-recent-activity">কোনো সাম্প্রতিক কার্যকলাপ নেই।</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase কনফিগারেশন ইম্পোর্ট করুন
+        import { auth, database } from './js/firebase_config.js';
+        import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { ref, onValue, get, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const totalUsersElem = document.getElementById('total-users');
+        const totalDepositsElem = document.getElementById('total-deposits');
+        const totalWithdrawalsElem = document.getElementById('total-withdrawals');
+        const pendingRequestsElem = document.getElementById('pending-requests');
+        const recentActivityTbody = document.getElementById('recent-activity-tbody');
+        const noRecentActivityMessage = document.getElementById('no-recent-activity');
+        const adminLogoutButton = document.getElementById('admin-logout-button');
+
+        let currentUserUid;
+
+        // অ্যাডমিন হিসেবে লগইন করা আছে কিনা চেক করুন
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                const isAdmin = await checkIfAdmin(user.uid);
+                if (isAdmin) {
+                    loadDashboardStats();
+                    loadRecentActivities();
+                } else {
+                    alert('আপনার অ্যাডমিন প্যানেলে অ্যাক্সেস নেই।');
+                    await auth.signOut();
+                    window.location.href = 'admin_login.html'; // অ্যাডমিন না হলে লগইন পেজে রিডাইরেক্ট
+                }
+            } else {
+                window.location.href = 'admin_login.html'; // লগইন না করা থাকলে লগইন পেজে রিডাইরেক্ট
+            }
+        });
+
+        // অ্যাডমিন কিনা তা চেক করার ফাংশন
+        async function checkIfAdmin(uid) {
+            if (!uid) return false;
+            const adminRef = ref(database, 'admins/' + uid);
+            try {
+                const snapshot = await get(adminRef);
+                return snapshot.exists();
+            } catch (error) {
+                console.error("Error checking admin status:", error);
+                return false;
+            }
+        }
+
+        // ড্যাশবোর্ডের পরিসংখ্যান লোড করুন
+        function loadDashboardStats() {
+            // মোট ইউজার
+            onValue(ref(database, 'users'), (snapshot) => {
+                totalUsersElem.textContent = snapshot.size;
+            }, (error) => {
+                console.error("Error loading total users:", error);
+                totalUsersElem.textContent = 'ত্রুটি';
+            });
+
+            // মোট ডিপোজিট এবং পেন্ডিং ডিপোজিট
+            onValue(ref(database, 'deposits'), (snapshot) => {
+                let totalApproved = 0;
+                let pendingCount = 0;
+                snapshot.forEach(childSnapshot => {
+                    const deposit = childSnapshot.val();
+                    if (deposit.status === 'Approved') {
+                        totalApproved += deposit.amount;
+                    } else if (deposit.status === 'Pending') {
+                        pendingCount++;
+                    }
+                });
+                totalDepositsElem.textContent = `৳ ${totalApproved.toFixed(2)}`;
+                // Combine pending deposit and withdrawal requests for total pending
+                pendingRequestsElem.textContent = pendingCount; // This will be updated with withdrawals later
+            }, (error) => {
+                console.error("Error loading total deposits:", error);
+                totalDepositsElem.textContent = '৳ 0.00';
+            });
+
+            // মোট উইথড্র এবং পেন্ডিং উইথড্র
+            onValue(ref(database, 'withdrawals'), (snapshot) => {
+                let totalCompleted = 0;
+                let pendingWithdrawals = 0;
+                snapshot.forEach(childSnapshot => {
+                    const withdrawal = childSnapshot.val();
+                    if (withdrawal.status === 'Completed') {
+                        totalCompleted += withdrawal.amount;
+                    } else if (withdrawal.status === 'Pending') {
+                        pendingWithdrawals++;
+                    }
+                });
+                totalWithdrawalsElem.textContent = `৳ ${totalCompleted.toFixed(2)}`;
+                // Update total pending requests with pending withdrawals
+                const currentPending = parseInt(pendingRequestsElem.textContent) || 0;
+                pendingRequestsElem.textContent = currentPending + pendingWithdrawals;
+            }, (error) => {
+                console.error("Error loading total withdrawals:", error);
+                totalWithdrawalsElem.textContent = '৳ 0.00';
+            });
+        }
+
+        // সাম্প্রতিক কার্যকলাপ লোড করুন (ডিপোজিট এবং উইথড্রয়াল)
+        function loadRecentActivities() {
+            const activities = [];
+            let loadedDeposits = false;
+            let loadedWithdrawals = false;
+
+            // Load recent deposits
+            const depositsQuery = query(ref(database, 'deposits'), orderByChild('requestDate'), limitToLast(5));
+            onValue(depositsQuery, (snapshot) => {
+                snapshot.forEach(childSnapshot => {
+                    const deposit = childSnapshot.val();
+                    activities.push({
+                        date: deposit.requestDate,
+                        user: deposit.userName || 'N/A',
+                        type: 'ডিপোজিট',
+                        amount: deposit.amount,
+                        status: deposit.status,
+                        id: childSnapshot.key // Store ID for potential linking
+                    });
+                });
+                loadedDeposits = true;
+                renderActivities();
+            }, (error) => {
+                console.error("Error loading recent deposits:", error);
+                loadedDeposits = true;
+                renderActivities();
+            });
+
+            // Load recent withdrawals
+            const withdrawalsQuery = query(ref(database, 'withdrawals'), orderByChild('requestDate'), limitToLast(5));
+            onValue(withdrawalsQuery, (snapshot) => {
+                snapshot.forEach(childSnapshot => {
+                    const withdrawal = childSnapshot.val();
+                    activities.push({
+                        date: withdrawal.requestDate,
+                        user: withdrawal.userName || 'N/A',
+                        type: 'উইথড্র',
+                        amount: withdrawal.amount,
+                        status: withdrawal.status,
+                        id: childSnapshot.key // Store ID for potential linking
+                    });
+                });
+                loadedWithdrawals = true;
+                renderActivities();
+            }, (error) => {
+                console.error("Error loading recent withdrawals:", error);
+                loadedWithdrawals = true;
+                renderActivities();
+            });
+
+            function renderActivities() {
+                if (loadedDeposits && loadedWithdrawals) {
+                    // Sort all activities by date (most recent first)
+                    activities.sort((a, b) => (b.date || 0) - (a.date || 0));
+
+                    recentActivityTbody.innerHTML = ''; // Clear existing rows
+                    if (activities.length === 0) {
+                        noRecentActivityMessage.style.display = 'block';
+                    } else {
+                        noRecentActivityMessage.style.display = 'none';
+                        // Limit to top 5 activities for display
+                        activities.slice(0, 5).forEach(activity => {
+                            const row = recentActivityTbody.insertRow();
+                            const date = activity.date ? new Date(activity.date).toLocaleDateString('bn-BD') : 'N/A';
+                            const amount = activity.amount ? `৳ ${activity.amount.toFixed(2)}` : 'N/A';
+                            
+                            row.innerHTML = `
+                                <td>${date}</td>
+                                <td>${activity.user}</td>
+                                <td>${activity.type}</td>
+                                <td>${amount}</td>
+                                <td><span class="status-badge ${activity.status.toLowerCase()}">${activity.status}</span></td>
+                            `;
+                        });
+                    }
+                }
+            }
+        }
+
+        // অ্যাডমিন লগআউট
+        adminLogoutButton.addEventListener('click', async () => {
+            if (confirm('আপনি কি অ্যাডমিন প্যানেল থেকে লগআউট করতে চান?')) {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'admin_login.html'; // লগইন পেজে রিডাইরেক্ট
+                } catch (error) {
+                    console.error("Error signing out:", error);
+                    alert('লগআউট করতে সমস্যা হয়েছে।');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

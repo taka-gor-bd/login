@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taka Gor - সেটিংস</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E86AB;
+            --secondary-bg: #f6f5f5;
+            --white-bg: #ffffff;
+            --accent-orange: #F26419;
+            --accent-green: #28A745;
+            --text-dark: #333;
+            --text-light: #555;
+            --border-light: #ddd;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --info-bg: #e0f2f7;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-bg);
+            margin: 0;
+            color: var(--text-dark);
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header .logo-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .header .logout-btn {
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+        .header .logout-btn:hover {
+            background-color: #d85213;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: calc(100vh - 68px);
+            flex-direction: column; /* মোবাইল স্ক্রিনে কলাম লেআউট */
+        }
+
+        .sidebar {
+            width: 100%;
+            background-color: var(--white-bg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            flex-shrink: 0;
+            border-bottom: 3px solid transparent;
+        }
+
+        .sidebar a .material-icons {
+            margin-bottom: 4px;
+            font-size: 20px;
+            color: #777;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: var(--info-bg);
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .sidebar a.active .material-icons {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 15px;
+            background-color: var(--secondary-bg);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        .section-card {
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 12px var(--shadow-medium);
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-card h3 {
+            color: var(--primary-color);
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95em;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="url"],
+        .form-group input[type="number"] {
+            width: calc(100% - 22px); /* Account for padding and border */
+            padding: 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.9em;
+            box-sizing: border-box;
+            background-color: var(--secondary-bg);
+        }
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.2);
+            outline: none;
+        }
+
+        .save-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .save-button:hover:not(:disabled) {
+            background-color: #226b8a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .save-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .save-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Message for success/error */
+        .status-message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-weight: 500;
+            text-align: center;
+            display: none;
+        }
+        .status-message.success {
+            background-color: #d4edda;
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+        .status-message.error {
+            background-color: #f8d7da;
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 768px) {
+            .admin-layout {
+                flex-direction: row;
+            }
+            .sidebar {
+                width: 250px;
+                flex-direction: column;
+                padding: 20px 0;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+                border-bottom: none;
+            }
+            .sidebar a {
+                padding: 15px 20px;
+                flex-direction: row;
+                font-size: 1em;
+                border-bottom: none;
+                border-left: 5px solid transparent;
+            }
+            .sidebar a .material-icons {
+                margin-right: 15px;
+                margin-bottom: 0;
+                font-size: 24px;
+            }
+            .sidebar a:hover, .sidebar a.active {
+                border-bottom: none;
+                border-left-color: var(--primary-color);
+            }
+            .main-content {
+                padding: 30px;
+            }
+            h2 {
+                font-size: 2.2em;
+                text-align: left;
+            }
+            .section-card {
+                padding: 30px;
+            }
+            .section-card h3 {
+                font-size: 1.8em;
+                text-align: left;
+            }
+            .form-group input[type="text"],
+            .form-group input[type="url"],
+            .form-group input[type="number"] {
+                width: calc(100% - 30px);
+                padding: 15px;
+                font-size: 1em;
+            }
+            .save-button {
+                padding: 14px 25px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-name">Taka Gor (অ্যাডমিন)</div>
+        <button class="logout-btn" id="admin-logout-button">লগআউট</button>
+    </div>
+
+    <div class="admin-layout">
+        <div class="sidebar">
+            <a href="admin_dashboard.html"><span class="material-icons">dashboard</span> ড্যাশবোর্ড</a>
+            <a href="admin_user_management.html"><span class="material-icons">people</span> ইউজার ম্যানেজমেন্ট</a>
+            <a href="admin_deposit_requests.html"><span class="material-icons">inbox</span> ডিপোজিট রিকোয়েস্ট</a>
+            <a href="admin_withdrawal_requests.html"><span class="material-icons">outbox</span> উইথড্র রিকোয়েস্ট</a>
+            <a href="admin_plan_management.html"><span class="material-icons">category</span> প্ল্যান ম্যানেজমেন্ট</a>
+            <a href="admin_settings.html" class="active"><span class="material-icons">settings</span> সেটিংস</a>
+        </div>
+
+        <div class="main-content">
+            <h2>সেটিংস</h2>
+
+            <div class="section-card">
+                <h3>সাধারণ সেটিংস</h3>
+                <form id="general-settings-form">
+                    <div class="form-group">
+                        <label for="deposit-number">ডিপোজিট নম্বর:</label>
+                        <input type="text" id="deposit-number" placeholder="ইউজারদের জন্য ডিপোজিট নম্বর (যেমন: 01xxxxxxxxx)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="min-withdrawal-amount">সর্বনিম্ন উইথড্র পরিমাণ (৳):</label>
+                        <input type="number" id="min-withdrawal-amount" step="any" min="0" placeholder="যেমন: 200">
+                    </div>
+                    <div class="form-group">
+                        <label for="withdrawal-charge-percentage">উইথড্র চার্জ (%):</label>
+                        <input type="number" id="withdrawal-charge-percentage" step="any" min="0" max="100" placeholder="যেমন: 10">
+                    </div>
+                    <button type="submit" class="save-button" id="save-general-settings-button">
+                        <span class="button-text">সেভ করুন</span>
+                        <div class="loading-spinner"></div>
+                    </button>
+                    <p class="status-message" id="general-settings-status"></p>
+                </form>
+            </div>
+
+            <div class="section-card">
+                <h3>সাপোর্ট লিঙ্কস</h3>
+                <p style="font-size: 0.9em; color: var(--text-light); margin-bottom: 20px;">এই লিঙ্কগুলো ইউজারের প্রোফাইল পেজে প্রদর্শিত হবে।</p>
+                <form id="support-links-form">
+                    <div class="form-group">
+                        <label for="whatsapp-link">হোয়াটসঅ্যাপ গ্রুপ লিঙ্ক:</label>
+                        <input type="url" id="whatsapp-link" placeholder="WhatsApp গ্রুপ ইনভাইট লিঙ্ক">
+                    </div>
+                    <div class="form-group">
+                        <label for="telegram-link">টেলিগ্রাম গ্রুপ লিঙ্ক:</label>
+                        <input type="url" id="telegram-link" placeholder="Telegram গ্রুপ ইনভাইট লিঙ্ক">
+                    </div>
+                    <div class="form-group">
+                        <label for="facebook-link">ফেসবুক গ্রুপ লিঙ্ক:</label>
+                        <input type="url" id="facebook-link" placeholder="Facebook গ্রুপ লিঙ্ক">
+                    </div>
+                    <div class="form-group">
+                        <label for="messenger-link">মেসেঞ্জার গ্রুপ লিঙ্ক:</label>
+                        <input type="url" id="messenger-link" placeholder="Messenger গ্রুপ লিঙ্ক">
+                    </div>
+                    <button type="submit" class="save-button" id="save-support-links-button">
+                        <span class="button-text">সেভ করুন</span>
+                        <div class="loading-spinner"></div>
+                    </button>
+                    <p class="status-message" id="support-links-status"></p>
+                </form>
+            </div>
+            
+            </div>
+    </div>
+
+    <script type="module">
+        // Firebase কনফিগারেশন ইম্পোর্ট করুন
+        import { auth, database } from './js/firebase_config.js';
+        import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { ref, onValue, get, set, update } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const adminLogoutButton = document.getElementById('admin-logout-button');
+
+        // General Settings Elements
+        const generalSettingsForm = document.getElementById('general-settings-form');
+        const depositNumberInput = document.getElementById('deposit-number');
+        const minWithdrawalAmountInput = document.getElementById('min-withdrawal-amount');
+        const withdrawalChargePercentageInput = document.getElementById('withdrawal-charge-percentage');
+        const saveGeneralSettingsButton = document.getElementById('save-general-settings-button');
+        const generalSettingsStatus = document.getElementById('general-settings-status');
+
+        // Support Links Elements
+        const supportLinksForm = document.getElementById('support-links-form');
+        const whatsappLinkInput = document.getElementById('whatsapp-link');
+        const telegramLinkInput = document.getElementById('telegram-link');
+        const facebookLinkInput = document.getElementById('facebook-link');
+        const messengerLinkInput = document.getElementById('messenger-link');
+        const saveSupportLinksButton = document.getElementById('save-support-links-button');
+        const supportLinksStatus = document.getElementById('support-links-status');
+
+
+        // Function to show/hide loading spinner on buttons
+        function showButtonLoading(button, textElement, spinnerElement, originalText) {
+            button.disabled = true;
+            textElement.textContent = 'সেভ হচ্ছে...';
+            spinnerElement.style.display = 'block';
+        }
+
+        function hideButtonLoading(button, textElement, spinnerElement, originalText) {
+            button.disabled = false;
+            textElement.textContent = originalText;
+            spinnerElement.style.display = 'none';
+        }
+
+        // Function to display status messages
+        function showStatusMessage(element, message, type = 'error') {
+            element.textContent = message;
+            element.classList.remove('success', 'error'); // Clear previous types
+            element.classList.add(type);
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+
+        // অ্যাডমিন হিসেবে লগইন করা আছে কিনা চেক করুন
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const isAdmin = await checkIfAdmin(user.uid);
+                if (isAdmin) {
+                    loadGeneralSettings();
+                    loadSupportLinks();
+                } else {
+                    alert('আপনার অ্যাডমিন প্যানেলে অ্যাক্সেস নেই।');
+                    await auth.signOut();
+                    window.location.href = 'admin_login.html';
+                }
+            } else {
+                window.location.href = 'admin_login.html';
+            }
+        });
+
+        // অ্যাডমিন কিনা তা চেক করার ফাংশন
+        async function checkIfAdmin(uid) {
+            if (!uid) return false;
+            const adminRef = ref(database, 'admins/' + uid);
+            try {
+                const snapshot = await get(adminRef);
+                return snapshot.exists();
+            } catch (error) {
+                console.error("Error checking admin status:", error);
+                return false;
+            }
+        }
+
+        // সাধারণ সেটিংস লোড করুন
+        function loadGeneralSettings() {
+            const generalSettingsRef = ref(database, 'adminConfig');
+            onValue(generalSettingsRef, (snapshot) => {
+                const settings = snapshot.val();
+                if (settings) {
+                    depositNumberInput.value = settings.depositNumber || '';
+                    minWithdrawalAmountInput.value = settings.minWithdrawalAmount || '';
+                    withdrawalChargePercentageInput.value = settings.withdrawalChargePercentage || '';
+                }
+            }, (error) => {
+                console.error("Error loading general settings:", error);
+                showStatusMessage(generalSettingsStatus, 'সাধারণ সেটিংস লোড করতে সমস্যা হয়েছে।', 'error');
+            });
+        }
+
+        // সাপোর্ট লিঙ্কস লোড করুন
+        function loadSupportLinks() {
+            const supportLinksRef = ref(database, 'supportLinks');
+            onValue(supportLinksRef, (snapshot) => {
+                const links = snapshot.val();
+                if (links) {
+                    whatsappLinkInput.value = links.whatsapp || '';
+                    telegramLinkInput.value = links.telegram || '';
+                    facebookLinkInput.value = links.facebook || '';
+                    messengerLinkInput.value = links.messenger || '';
+                }
+            }, (error) => {
+                console.error("Error loading support links:", error);
+                showStatusMessage(supportLinksStatus, 'সাপোর্ট লিঙ্ক লোড করতে সমস্যা হয়েছে।', 'error');
+            });
+        }
+
+        // সাধারণ সেটিংস সেভ করুন
+        generalSettingsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const depositNumber = depositNumberInput.value.trim();
+            const minWithdrawalAmount = parseFloat(minWithdrawalAmountInput.value) || 0;
+            const withdrawalChargePercentage = parseFloat(withdrawalChargePercentageInput.value) || 0;
+
+            if (!depositNumber) {
+                showStatusMessage(generalSettingsStatus, 'ডিপোজিট নম্বর আবশ্যক।', 'error');
+                return;
+            }
+            if (minWithdrawalAmount < 0 || withdrawalChargePercentage < 0 || withdrawalChargePercentage > 100) {
+                showStatusMessage(generalSettingsStatus, 'পরিমাণ এবং চার্জ (%) সঠিকভাবে দিন।', 'error');
+                return;
+            }
+
+            showButtonLoading(saveGeneralSettingsButton, saveGeneralSettingsButton.querySelector('.button-text'), saveGeneralSettingsButton.querySelector('.loading-spinner'), 'সেভ করুন');
+
+            try {
+                await update(ref(database, 'adminConfig'), {
+                    depositNumber: depositNumber,
+                    minWithdrawalAmount: minWithdrawalAmount,
+                    withdrawalChargePercentage: withdrawalChargePercentage
+                });
+                showStatusMessage(generalSettingsStatus, 'সাধারণ সেটিংস সফলভাবে সেভ করা হয়েছে!', 'success');
+            } catch (error) {
+                console.error("Error saving general settings:", error);
+                showStatusMessage(generalSettingsStatus, 'সেটিংস সেভ করতে সমস্যা হয়েছে।', 'error');
+            } finally {
+                hideButtonLoading(saveGeneralSettingsButton, saveGeneralSettingsButton.querySelector('.button-text'), saveGeneralSettingsButton.querySelector('.loading-spinner'), 'সেভ করুন');
+            }
+        });
+
+        // সাপোর্ট লিঙ্কস সেভ করুন
+        supportLinksForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const whatsapp = whatsappLinkInput.value.trim();
+            const telegram = telegramLinkInput.value.trim();
+            const facebook = facebookLinkInput.value.trim();
+            const messenger = messengerLinkInput.value.trim();
+
+            showButtonLoading(saveSupportLinksButton, saveSupportLinksButton.querySelector('.button-text'), saveSupportLinksButton.querySelector('.loading-spinner'), 'সেভ করুন');
+
+            try {
+                await update(ref(database, 'supportLinks'), {
+                    whatsapp: whatsapp || null,
+                    telegram: telegram || null,
+                    facebook: facebook || null,
+                    messenger: messenger || null
+                });
+                showStatusMessage(supportLinksStatus, 'সাপোর্ট লিঙ্কস সফলভাবে সেভ করা হয়েছে!', 'success');
+            } catch (error) {
+                console.error("Error saving support links:", error);
+                showStatusMessage(supportLinksStatus, 'লিঙ্ক সেভ করতে সমস্যা হয়েছে।', 'error');
+            } finally {
+                hideButtonLoading(saveSupportLinksButton, saveSupportLinksButton.querySelector('.button-text'), saveSupportLinksButton.querySelector('.loading-spinner'), 'সেভ করুন');
+            }
+        });
+
+
+        // অ্যাডমিন লগআউট
+        adminLogoutButton.addEventListener('click', async () => {
+            if (confirm('আপনি কি অ্যাডমিন প্যানেল থেকে লগআউট করতে চান?')) {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'admin_login.html'; // লগইন পেজে রিডাইরেক্ট
+                } catch (error) {
+                    console.error("Error signing out:", error);
+                    alert('লগআউট করতে সমস্যা হয়েছে।');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

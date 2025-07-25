@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taka Gor - প্ল্যান ম্যানেজমেন্ট</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E86AB;
+            --secondary-bg: #f6f5f5;
+            --white-bg: #ffffff;
+            --accent-orange: #F26419;
+            --accent-green: #28A745;
+            --text-dark: #333;
+            --text-light: #555;
+            --border-light: #ddd;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --info-bg: #e0f2f7;
+            --danger-red: #dc3545;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-bg);
+            margin: 0;
+            color: var(--text-dark);
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header .logo-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .header .logout-btn {
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+        .header .logout-btn:hover {
+            background-color: #d85213;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: calc(100vh - 68px);
+            flex-direction: column; /* মোবাইল স্ক্রিনে কলাম লেআউট */
+        }
+
+        .sidebar {
+            width: 100%;
+            background-color: var(--white-bg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            flex-shrink: 0;
+            border-bottom: 3px solid transparent;
+        }
+
+        .sidebar a .material-icons {
+            margin-bottom: 4px;
+            font-size: 20px;
+            color: #777;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: var(--info-bg);
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .sidebar a.active .material-icons {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 15px;
+            background-color: var(--secondary-bg);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8em;
+            text-align: center;
+        }
+
+        .section-card {
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 12px var(--shadow-medium);
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-card h3 {
+            color: var(--primary-color);
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95em;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: calc(100% - 22px); /* Account for padding and border */
+            padding: 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.9em;
+            box-sizing: border-box;
+            background-color: var(--secondary-bg);
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .button-group button {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .button-group button.primary-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .button-group button.primary-btn:hover:not(:disabled) {
+            background-color: #226b8a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .button-group button.reset-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        .button-group button.reset-btn:hover:not(:disabled) {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .button-group button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Plan List Table (Responsive) */
+        .plan-list-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .plan-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 600px;
+        }
+
+        .plan-table thead {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        .plan-table th, .plan-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-light);
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .plan-table th:first-child { border-top-left-radius: 10px; }
+        .plan-table th:last-child { border-top-right-radius: 10px; }
+
+        .plan-table tbody tr {
+            background-color: var(--white-bg);
+            transition: background-color 0.2s ease;
+        }
+        .plan-table tbody tr:hover {
+            background-color: var(--info-bg);
+        }
+        .plan-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .plan-table td {
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+        .plan-table td.long-text {
+            white-space: normal;
+            word-break: break-all;
+        }
+
+        .action-buttons-td button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            margin-right: 5px;
+            white-space: nowrap;
+        }
+        .action-buttons-td button:hover {
+            background-color: #226b8a;
+            transform: translateY(-1px);
+        }
+        .action-buttons-td button.delete-btn {
+            background-color: var(--danger-red);
+        }
+        .action-buttons-td button.delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        .no-plans-message {
+            text-align: center;
+            color: var(--text-light);
+            padding: 30px;
+            font-size: 1em;
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px var(--shadow-light);
+            margin-top: 20px;
+            display: none; /* JS will control visibility */
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 768px) {
+            .admin-layout {
+                flex-direction: row;
+            }
+            .sidebar {
+                width: 250px;
+                flex-direction: column;
+                padding: 20px 0;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+                border-bottom: none;
+            }
+            .sidebar a {
+                padding: 15px 20px;
+                flex-direction: row;
+                font-size: 1em;
+                border-bottom: none;
+                border-left: 5px solid transparent;
+            }
+            .sidebar a .material-icons {
+                margin-right: 15px;
+                margin-bottom: 0;
+                font-size: 24px;
+            }
+            .sidebar a:hover, .sidebar a.active {
+                border-bottom: none;
+                border-left-color: var(--primary-color);
+            }
+            .main-content {
+                padding: 30px;
+            }
+            h2 {
+                font-size: 2.2em;
+                text-align: left;
+            }
+            .section-card {
+                padding: 30px;
+            }
+            .section-card h3 {
+                font-size: 1.8em;
+                text-align: left;
+            }
+            .form-group input[type="text"],
+            .form-group input[type="number"],
+            .form-group textarea {
+                width: calc(100% - 30px); /* Adjust for larger padding */
+                padding: 15px;
+                font-size: 1em;
+            }
+            .button-group {
+                flex-wrap: nowrap;
+            }
+            .plan-table {
+                min-width: 700px;
+            }
+            .plan-table th, .plan-table td {
+                padding: 15px 20px;
+            }
+            .plan-table td {
+                font-size: 0.95em;
+            }
+            .action-buttons-td button {
+                padding: 9px 14px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-name">Taka Gor (অ্যাডমিন)</div>
+        <button class="logout-btn" id="admin-logout-button">লগআউট</button>
+    </div>
+
+    <div class="admin-layout">
+        <div class="sidebar">
+            <a href="admin_dashboard.html"><span class="material-icons">dashboard</span> ড্যাশবোর্ড</a>
+            <a href="admin_user_management.html"><span class="material-icons">people</span> ইউজার ম্যানেজমেন্ট</a>
+            <a href="admin_deposit_requests.html"><span class="material-icons">inbox</span> ডিপোজিট রিকোয়েস্ট</a>
+            <a href="admin_withdrawal_requests.html"><span class="material-icons">outbox</span> উইথড্র রিকোয়েস্ট</a>
+            <a href="admin_plan_management.html" class="active"><span class="material-icons">category</span> প্ল্যান ম্যানেজমেন্ট</a>
+            <a href="admin_settings.html"><span class="material-icons">settings</span> সেটিংস</a>
+        </div>
+
+        <div class="main-content">
+            <h2>প্ল্যান ম্যানেজমেন্ট</h2>
+
+            <div class="section-card">
+                <h3 id="plan-form-title">নতুন প্ল্যান তৈরি করুন</h3>
+                <form id="plan-form">
+                    <input type="hidden" id="plan-id-input">
+                    <div class="form-group">
+                        <label for="plan-name">প্ল্যানের নাম:</label>
+                        <input type="text" id="plan-name" placeholder="যেমন: বেসিক, সিলভার, গোল্ড" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="plan-price">প্ল্যানের মূল্য (৳):</label>
+                        <input type="number" id="plan-price" step="any" min="0" placeholder="যেমন: 500, 1000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="daily-income">দৈনিক ইনকাম (৳):</label>
+                        <input type="number" id="daily-income" step="any" min="0" placeholder="যেমন: 50, 100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="plan-duration">প্ল্যানের মেয়াদ (দিন):</label>
+                        <input type="number" id="plan-duration" min="1" placeholder="যেমন: 30, 60" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="referral-bonus">রেফারেল বোনাস (%):</label>
+                        <input type="number" id="referral-bonus" step="any" min="0" max="100" placeholder="যেমন: 5, 10">
+                    </div>
+                    <div class="form-group">
+                        <label for="plan-description">প্ল্যান বর্ণনা (ঐচ্ছিক):</label>
+                        <textarea id="plan-description" placeholder="এই প্ল্যান সম্পর্কে বিস্তারিত লিখুন..."></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="primary-btn" id="save-plan-button">
+                            <span class="button-text">সেভ করুন</span>
+                            <div class="loading-spinner"></div>
+                        </button>
+                        <button type="button" class="reset-btn" id="reset-form-button">ফর্ম রিসেট করুন</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="section-card">
+                <h3>বর্তমান প্ল্যানসমূহ</h3>
+                <div class="plan-list-container">
+                    <table class="plan-table">
+                        <thead>
+                            <tr>
+                                <th>নাম</th>
+                                <th>মূল্য</th>
+                                <th>দৈনিক ইনকাম</th>
+                                <th>মেয়াদ (দিন)</th>
+                                <th>রেফারেল বোনাস (%)</th>
+                                <th>অ্যাকশন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="plan-table-body">
+                            </tbody>
+                    </table>
+                </div>
+                <p class="no-plans-message" id="no-plans-found">কোনো প্ল্যান পাওয়া যায়নি।</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase কনফিগারেশন ইম্পোর্ট করুন
+        import { auth, database } from './js/firebase_config.js';
+        import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { ref, onValue, push, set, update, remove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const planForm = document.getElementById('plan-form');
+        const planFormTitle = document.getElementById('plan-form-title');
+        const planIdInput = document.getElementById('plan-id-input');
+        const planNameInput = document.getElementById('plan-name');
+        const planPriceInput = document.getElementById('plan-price');
+        const dailyIncomeInput = document.getElementById('daily-income');
+        const planDurationInput = document.getElementById('plan-duration');
+        const referralBonusInput = document.getElementById('referral-bonus');
+        const planDescriptionInput = document.getElementById('plan-description');
+        const savePlanButton = document.getElementById('save-plan-button');
+        const resetFormButton = document.getElementById('reset-form-button');
+        const planTableBody = document.getElementById('plan-table-body');
+        const noPlansFoundMessage = document.getElementById('no-plans-found');
+        const adminLogoutButton = document.getElementById('admin-logout-button');
+
+        // Function to show/hide loading spinner on buttons
+        function showButtonLoading(button, textElement, spinnerElement, originalText) {
+            button.disabled = true;
+            textElement.textContent = 'লোড হচ্ছে...';
+            spinnerElement.style.display = 'block';
+        }
+
+        function hideButtonLoading(button, textElement, spinnerElement, originalText) {
+            button.disabled = false;
+            textElement.textContent = originalText;
+            spinnerElement.style.display = 'none';
+        }
+
+        // অ্যাডমিন হিসেবে লগইন করা আছে কিনা চেক করুন
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const isAdmin = await checkIfAdmin(user.uid);
+                if (isAdmin) {
+                    loadPlans(); // অ্যাডমিন হলে প্ল্যান ডেটা লোড করুন
+                } else {
+                    alert('আপনার অ্যাডমিন প্যানেলে অ্যাক্সেস নেই।');
+                    await auth.signOut();
+                    window.location.href = 'admin_login.html';
+                }
+            } else {
+                window.location.href = 'admin_login.html';
+            }
+        });
+
+        // অ্যাডমিন কিনা তা চেক করার ফাংশন
+        async function checkIfAdmin(uid) {
+            if (!uid) return false;
+            const adminRef = ref(database, 'admins/' + uid);
+            try {
+                const snapshot = await get(adminRef);
+                return snapshot.exists();
+            } catch (error) {
+                console.error("Error checking admin status:", error);
+                return false;
+            }
+        }
+
+        // প্ল্যান লোড করুন এবং টেবিলে প্রদর্শন করুন
+        function loadPlans() {
+            const plansRef = ref(database, 'plans');
+            onValue(plansRef, (snapshot) => {
+                planTableBody.innerHTML = ''; // টেবিল খালি করুন
+                const plans = [];
+                if (snapshot.exists()) {
+                    snapshot.forEach(childSnapshot => {
+                        plans.push({ id: childSnapshot.key, ...childSnapshot.val() });
+                    });
+                }
+
+                if (plans.length === 0) {
+                    noPlansFoundMessage.style.display = 'block';
+                    return;
+                } else {
+                    noPlansFoundMessage.style.display = 'none';
+                }
+
+                plans.forEach(plan => {
+                    const row = planTableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${plan.name || 'N/A'}</td>
+                        <td>৳ ${plan.price ? plan.price.toFixed(2) : '0.00'}</td>
+                        <td>৳ ${plan.dailyIncome ? plan.dailyIncome.toFixed(2) : '0.00'}</td>
+                        <td>${plan.duration || 'N/A'} দিন</td>
+                        <td>${plan.referralBonus ? plan.referralBonus.toFixed(2) : '0.00'}%</td>
+                        <td class="action-buttons-td">
+                            <button class="edit-plan-btn" data-id="${plan.id}">এডিট</button>
+                            <button class="delete-btn" data-id="${plan.id}">ডিলিট</button>
+                        </td>
+                    `;
+                });
+
+                addPlanActionButtonListeners(); // বাটনগুলোতে ইভেন্ট লিসেনার যোগ করুন
+            }, (error) => {
+                console.error("Error loading plans:", error);
+                planTableBody.innerHTML = '<tr><td colspan="6" class="no-plans-message" style="display: block;">প্ল্যান ডেটা লোড করতে সমস্যা হয়েছে।</td></tr>';
+                noPlansFoundMessage.style.display = 'none';
+            });
+        }
+
+        // প্ল্যান ফর্ম রিসেট করুন
+        function resetPlanForm() {
+            planIdInput.value = '';
+            planNameInput.value = '';
+            planPriceInput.value = '';
+            dailyIncomeInput.value = '';
+            planDurationInput.value = '';
+            referralBonusInput.value = '';
+            planDescriptionInput.value = '';
+            planFormTitle.textContent = 'নতুন প্ল্যান তৈরি করুন';
+            savePlanButton.querySelector('.button-text').textContent = 'সেভ করুন';
+            savePlanButton.querySelector('.loading-spinner').style.display = 'none';
+            savePlanButton.disabled = false;
+        }
+
+        resetFormButton.addEventListener('click', resetPlanForm);
+
+        // প্ল্যান ফর্ম সাবমিট হ্যান্ডলার (নতুন তৈরি বা এডিট)
+        planForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const planId = planIdInput.value;
+            const name = planNameInput.value.trim();
+            const price = parseFloat(planPriceInput.value);
+            const dailyIncome = parseFloat(dailyIncomeInput.value);
+            const duration = parseInt(planDurationInput.value);
+            const referralBonus = parseFloat(referralBonusInput.value || 0); // Optional
+            const description = planDescriptionInput.value.trim(); // Optional
+
+            if (!name || isNaN(price) || price < 0 || isNaN(dailyIncome) || dailyIncome < 0 || isNaN(duration) || duration < 1) {
+                alert('অনুগ্রহ করে সকল প্রয়োজনীয় ফিল্ড সঠিকভাবে পূরণ করুন।');
+                return;
+            }
+
+            const planData = {
+                name,
+                price,
+                dailyIncome,
+                duration,
+                referralBonus,
+                description: description || null // Store null if empty
+            };
+
+            showButtonLoading(savePlanButton, savePlanButton.querySelector('.button-text'), savePlanButton.querySelector('.loading-spinner'), 'সেভ করুন');
+
+            try {
+                if (planId) {
+                    // Edit existing plan
+                    await update(ref(database, `plans/${planId}`), planData);
+                    alert('প্ল্যান সফলভাবে আপডেট করা হয়েছে!');
+                } else {
+                    // Create new plan
+                    await push(ref(database, 'plans'), planData);
+                    alert('নতুন প্ল্যান সফলভাবে তৈরি করা হয়েছে!');
+                }
+                resetPlanForm(); // ফর্ম রিসেট করুন
+            } catch (error) {
+                console.error("Error saving plan:", error);
+                alert('প্ল্যান সেভ করতে সমস্যা হয়েছে।');
+            } finally {
+                hideButtonLoading(savePlanButton, savePlanButton.querySelector('.button-text'), savePlanButton.querySelector('.loading-spinner'), 'সেভ করুন');
+            }
+        });
+
+        // প্ল্যান এডিট বাটন ক্লিক হ্যান্ডলার
+        function addPlanActionButtonListeners() {
+            document.querySelectorAll('.edit-plan-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const planId = e.target.dataset.id;
+                    const planRef = ref(database, `plans/${planId}`);
+                    try {
+                        const snapshot = await get(planRef);
+                        if (snapshot.exists()) {
+                            const plan = snapshot.val();
+                            planIdInput.value = planId;
+                            planNameInput.value = plan.name;
+                            planPriceInput.value = plan.price;
+                            dailyIncomeInput.value = plan.dailyIncome;
+                            planDurationInput.value = plan.duration;
+                            referralBonusInput.value = plan.referralBonus || '';
+                            planDescriptionInput.value = plan.description || '';
+                            planFormTitle.textContent = 'প্ল্যান এডিট করুন';
+                            savePlanButton.querySelector('.button-text').textContent = 'আপডেট করুন';
+                            // Scroll to top to show the form
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else {
+                            alert('প্ল্যানটি খুঁজে পাওয়া যায়নি।');
+                        }
+                    } catch (error) {
+                        console.error("Error fetching plan for edit:", error);
+                        alert('প্ল্যান ডেটা লোড করতে সমস্যা হয়েছে।');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const planId = e.target.dataset.id;
+                    if (confirm('আপনি কি নিশ্চিত এই প্ল্যানটি ডিলিট করতে চান? এই অ্যাকশনটি অপরিবর্তনীয়।')) {
+                        try {
+                            await remove(ref(database, `plans/${planId}`));
+                            alert('প্ল্যান সফলভাবে ডিলিট করা হয়েছে!');
+                        } catch (error) {
+                            console.error("Error deleting plan:", error);
+                            alert('প্ল্যান ডিলিট করতে সমস্যা হয়েছে।');
+                        }
+                    }
+                });
+            });
+        }
+
+        // অ্যাডমিন লগআউট
+        adminLogoutButton.addEventListener('click', async () => {
+            if (confirm('আপনি কি অ্যাডমিন প্যানেল থেকে লগআউট করতে চান?')) {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'admin_login.html'; // লগইন পেজে রিডাইরেক্ট
+                } catch (error) {
+                    console.error("Error signing out:", error);
+                    alert('লগআউট করতে সমস্যা হয়েছে।');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

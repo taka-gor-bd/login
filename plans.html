@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taka Gor - প্লান</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E86AB;
+            --secondary-bg: #f6f5f5;
+            --white-bg: #ffffff;
+            --accent-orange: #F26419;
+            --accent-green: #28A745;
+            --text-dark: #333;
+            --text-light: #555;
+            --border-light: #ddd;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --pending-color: #ffc107;
+            --approved-color: #28A745;
+            --cancelled-color: #dc3545;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-bg);
+            margin: 0;
+            padding-bottom: 80px; /* Space for premium bottom nav */
+            color: var(--text-dark);
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header .logo-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .content {
+            padding: 15px; /* মোবাইল স্ক্রিনের জন্য প্যাডিং কমানো হয়েছে */
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8em; /* রেসপনসিভ ফন্ট সাইজ */
+        }
+
+        .plan-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* ছোট প্লান কার্ডের জন্য গ্রিড */
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .plan-card {
+            background-color: var(--white-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px var(--shadow-medium); /* প্রিমিয়াম শ্যাডো */
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.05); /* হালকা বর্ডার */
+        }
+
+        .plan-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .plan-card img {
+            width: 100%;
+            height: 160px; /* ইমেজের উচ্চতা কমানো হয়েছে */
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .plan-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .plan-info h3 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            font-size: 1.3em; /* ফন্ট ছোট করা হয়েছে */
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .plan-info p {
+            font-size: 0.9em; /* ফন্ট ছোট করা হয়েছে */
+            color: var(--text-light);
+            margin-bottom: 6px;
+        }
+
+        .plan-info .price {
+            font-size: 1.5em; /* ফন্ট ছোট করা হয়েছে */
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 12px;
+        }
+
+        .buy-plan-button {
+            background-color: var(--accent-green);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em; /* ফন্ট ছোট করা হয়েছে */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            margin-top: 10px;
+            font-weight: 600;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .buy-plan-button:hover:not(:disabled) {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .buy-plan-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .buy-plan-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Loading Spinner for buttons */
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 0.8s linear infinite;
+            display: none; /* ডিফল্টভাবে লুকানো */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
+        .no-plan-message {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px var(--shadow-light);
+            margin-top: 30px;
+            border: 1px solid var(--border-light);
+        }
+
+        .no-plan-message h3 {
+            color: var(--accent-orange);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .no-plan-message button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .no-plan-message button:hover {
+            background-color: #226b8a;
+            transform: translateY(-2px);
+        }
+
+        /* My Plans Section */
+        .my-plans-section {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .my-plans-section h2 {
+            margin-bottom: 15px;
+            font-size: 1.6em;
+        }
+
+        .my-plan-card {
+            background-color: #e0f2f7; /* Lighter primary */
+            border: 1px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 8px var(--shadow-light);
+        }
+
+        .my-plan-card h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .my-plan-card p {
+            margin: 4px 0;
+            font-size: 0.9em;
+        }
+
+        .my-plan-card .status {
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.85em;
+            white-space: nowrap;
+        }
+
+        .my-plan-card .status.pending { background-color: var(--pending-color); color: var(--text-dark); }
+        .my-plan-card .status.approved { background-color: var(--approved-color); color: white; }
+        .my-plan-card .status.cancelled { background-color: var(--cancelled-color); color: white; }
+
+        /* Bottom Navigation Bar - Premium Look (Re-used from home.html) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--white-bg);
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 1100;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #777;
+            font-size: 0.8em;
+            font-weight: 600;
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 5px 0;
+            flex: 1;
+            max-width: 90px;
+            text-align: center;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+        .bottom-nav-item:active {
+            transform: translateY(-2px);
+        }
+
+        .bottom-nav-item .material-icons {
+            font-size: 26px;
+            margin-bottom: 3px;
+        }
+
+        /* Desktop/Tablet Styles */
+        @media (min-width: 768px) {
+            .header {
+                padding: 15px 40px;
+            }
+            .content {
+                padding: 20px 40px;
+            }
+            h2 {
+                font-size: 2em;
+            }
+            .plan-list {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 25px;
+            }
+            .plan-card img {
+                height: 180px;
+            }
+            .plan-info {
+                padding: 20px;
+            }
+            .plan-info h3 {
+                font-size: 1.4em;
+            }
+            .plan-info p {
+                font-size: 1em;
+            }
+            .plan-info .price {
+                font-size: 1.6em;
+            }
+            .buy-plan-button {
+                padding: 12px 25px;
+                font-size: 1.1em;
+            }
+            .loading-spinner {
+                width: 20px;
+                height: 20px;
+            }
+            .no-plan-message {
+                padding: 50px 20px;
+                margin-top: 50px;
+            }
+            .no-plan-message h3 {
+                font-size: 1.8em;
+            }
+            .no-plan-message button {
+                padding: 15px 30px;
+                font-size: 1.2em;
+            }
+            .my-plans-section {
+                margin-top: 40px;
+                padding-top: 20px;
+            }
+            .my-plans-section h2 {
+                font-size: 2em;
+            }
+            .my-plan-card {
+                padding: 20px;
+                margin-bottom: 15px;
+            }
+            .my-plan-card h3 {
+                font-size: 1.4em;
+            }
+            .my-plan-card p {
+                font-size: 1em;
+            }
+            .my-plan-card .status {
+                padding: 5px 10px;
+                font-size: 0.9em;
+            }
+            .bottom-nav {
+                padding: 12px 0;
+            }
+            .bottom-nav-item {
+                font-size: 0.9em;
+            }
+            .bottom-nav-item .material-icons {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-name">Taka Gor</div>
+        <div></div> 
+    </div>
+
+    <div class="content">
+        <h2>প্লান কিনুন</h2>
+        <div id="plan-list-container" class="plan-list">
+            <div id="no-plan-message" class="no-plan-message" style="display: none;">
+                <h3>কোনো প্লান উপলব্ধ নেই।</h3>
+                <button onclick="window.location.reload()">প্লান লোড করার চেষ্টা করুন</button>
+            </div>
+        </div>
+
+        <div class="my-plans-section">
+            <h2>আমার প্লানসমূহ</h2>
+            <div id="my-plans-container">
+                <p id="no-purchased-plans-message" style="text-align: center; color: var(--text-light); margin-top: 20px;">আপনি এখনো কোনো প্লান কেনেননি।</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="home.html" class="bottom-nav-item">
+            <span class="material-icons">home</span>
+            <span>হোম</span>
+        </a>
+        <a href="plans.html" class="bottom-nav-item active">
+            <span class="material-icons">redeem</span>
+            <span>প্লান</span>
+        </a>
+        <a href="withdraw.html" class="bottom-nav-item">
+            <span class="material-icons">account_balance_wallet</span>
+            <span>উইথড্র</span>
+        </a>
+        <a href="profile.html" class="bottom-nav-item">
+            <span class="material-icons">person</span>
+            <span>প্রোফাইল</span>
+        </a>
+    </div>
+
+    <script type="module">
+        // firebase_config.js থেকে auth এবং database ইম্পোর্ট করুন
+        import { auth, database } from './js/firebase_config.js'; 
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { ref, onValue, push, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const planListContainer = document.getElementById('plan-list-container');
+        const noPlanMessage = document.getElementById('no-plan-message');
+        const myPlansContainer = document.getElementById('my-plans-container');
+        const noPurchasedPlansMessage = document.getElementById('no-purchased-plans-message');
+
+        let currentUserUid;
+
+        // ব্যবহারকারী লগইন করা আছে কিনা তা নিশ্চিত করুন
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                loadAvailablePlans();
+                loadMyPurchasedPlans(user.uid);
+            } else {
+                // লগইন করা না থাকলে, লগইন/রেজিস্ট্রেশন পেজে রিডাইরেক্ট করুন
+                window.location.href = 'index.html'; 
+            }
+        });
+
+        function showButtonLoading(button, originalText) {
+            const buttonText = button.querySelector('.button-text');
+            const spinner = button.querySelector('.loading-spinner');
+            if (buttonText && spinner) {
+                button.disabled = true;
+                buttonText.textContent = 'লোড হচ্ছে...';
+                spinner.style.display = 'block';
+                button.classList.add('loading');
+            }
+        }
+
+        function hideButtonLoading(button, originalText) {
+            const buttonText = button.querySelector('.button-text');
+            const spinner = button.querySelector('.loading-spinner');
+            if (buttonText && spinner) {
+                button.disabled = false;
+                buttonText.textContent = originalText;
+                spinner.style.display = 'none';
+                button.classList.remove('loading');
+            }
+        }
+
+        function loadAvailablePlans() {
+            const plansRef = ref(database, 'plansList');
+            onValue(plansRef, (snapshot) => {
+                const plans = snapshot.val();
+                planListContainer.innerHTML = ''; // Clear previous plans
+                if (plans) {
+                    noPlanMessage.style.display = 'none';
+                    // প্ল্যানগুলো সর্ট করার প্রয়োজন হলে এখানে করতে পারেন (যেমন price অনুযায়ী)
+                    const sortedPlans = Object.keys(plans).map(key => ({ id: key, ...plans[key] }))
+                                            .sort((a, b) => a.price - b.price); // মূল্য অনুযায়ী ছোট থেকে বড়
+
+                    sortedPlans.forEach(plan => {
+                        const planCard = document.createElement('div');
+                        planCard.classList.add('plan-card');
+                        planCard.innerHTML = `
+                            <img src="${plan.imageUrl || 'https://via.placeholder.com/400x160?text=Plan+Image'}" alt="${plan.name || 'Plan Image'}">
+                            <div class="plan-info">
+                                <h3>${plan.name || 'নতুন প্লান'}</h3>
+                                <p>মেয়াদ: ${plan.duration || 'N/A'} দিন</p>
+                                <p>দৈনিক আয়: ৳ ${plan.dailyIncome ? plan.dailyIncome.toFixed(2) : '0.00'}</p>
+                                <p class="price">মূল্য: ৳ ${plan.price ? plan.price.toFixed(2) : '0.00'}</p>
+                                <button class="buy-plan-button" 
+                                    data-plan-id="${plan.id}" 
+                                    data-plan-price="${plan.price || 0}"
+                                    data-plan-name="${plan.name || 'N/A'}" 
+                                    data-plan-duration="${plan.duration || 'N/A'}" 
+                                    data-plan-dailyincome="${plan.dailyIncome || 0}">
+                                    <span class="button-text">প্লান কিনুন</span>
+                                    <div class="loading-spinner"></div>
+                                </button>
+                            </div>
+                        `;
+                        planListContainer.appendChild(planCard);
+                    });
+                    addBuyPlanListeners();
+                } else {
+                    noPlanMessage.style.display = 'block';
+                }
+            }, (error) => {
+                console.error("Error loading available plans:", error);
+                noPlanMessage.style.display = 'block';
+                noPlanMessage.querySelector('h3').textContent = 'প্লান লোড করতে সমস্যা হয়েছে।';
+            });
+        }
+
+        function addBuyPlanListeners() {
+            document.querySelectorAll('.buy-plan-button').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const planId = e.target.dataset.planId;
+                    const planPrice = parseFloat(e.target.dataset.planPrice);
+                    const planName = e.target.dataset.planName;
+                    const planDuration = e.target.dataset.planDuration;
+                    const planDailyIncome = parseFloat(e.target.dataset.planDailyincome);
+
+                    if (!currentUserUid) {
+                        alert('প্লান কিনতে অনুগ্রহ করে লগইন করুন।');
+                        return;
+                    }
+
+                    if (confirm(`আপনি কি এই প্লানটি (${planName} - ৳ ${planPrice.toFixed(2)}) কিনতে চান? এই টাকা আপনার মূল ব্যালেন্স থেকে কাটা হবে।`)) {
+                        showButtonLoading(button, 'প্লান কিনুন');
+                        const userRef = ref(database, `users/${currentUserUid}`);
+
+                        try {
+                            await runTransaction(userRef, (currentData) => {
+                                if (currentData === null) {
+                                    console.log("User data is null, cannot process transaction.");
+                                    alert('আপনার ডেটা লোড হয়নি, অনুগ্রহ করে আবার চেষ্টা করুন।');
+                                    return; // Abort transaction
+                                }
+                                
+                                const mainBalance = currentData.mainBalance || 0;
+
+                                if (mainBalance < planPrice) {
+                                    alert('আপনার মূল ব্যালেন্সে পর্যাপ্ত টাকা নেই। অনুগ্রহ করে ডিপোজিট করুন।');
+                                    return; // Abort transaction
+                                }
+
+                                currentData.mainBalance = mainBalance - planPrice; // Deduct immediately
+
+                                // Add plan request to user's plans, admin will approve/activate
+                                if (!currentData.plans) {
+                                    currentData.plans = {};
+                                }
+                                const newPlanRequestId = push(ref(database, `users/${currentUserUid}/plans`)).key; 
+                                currentData.plans[newPlanRequestId] = {
+                                    planId: planId,
+                                    purchaseDate: serverTimestamp(),
+                                    status: 'Pending', // Initial status
+                                    planPrice: planPrice,
+                                    name: planName,
+                                    duration: planDuration,
+                                    dailyIncome: planDailyIncome,
+                                };
+                                return currentData;
+                            });
+
+                            alert('আপনার প্লান কেনার অনুরোধ সফলভাবে জমা দেওয়া হয়েছে এবং টাকা কাটা হয়েছে। অ্যাডমিন অনুমোদনের জন্য অপেক্ষা করুন।');
+
+                        } catch (error) {
+                            console.error("Error purchasing plan:", error);
+                            if (error.message && error.message.includes("aborted")) {
+                                // Specific message for insufficient balance already handled in runTransaction
+                            } else {
+                                alert('প্লান কেনার সময় একটি সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+                            }
+                        } finally {
+                            hideButtonLoading(button, 'প্লান কিনুন');
+                        }
+                    }
+                });
+            });
+        }
+
+        function loadMyPurchasedPlans(uid) {
+            const myPlansRef = ref(database, `users/${uid}/plans`);
+            onValue(myPlansRef, (snapshot) => {
+                const myPlans = snapshot.val();
+                myPlansContainer.innerHTML = ''; // Clear previous plans
+                if (myPlans) {
+                    noPurchasedPlansMessage.style.display = 'none';
+                    // Convert object to array, sort by purchaseDate (latest first)
+                    const sortedPlans = Object.keys(myPlans).map(key => ({ id: key, ...myPlans[key] }))
+                                            .sort((a, b) => (b.purchaseDate || 0) - (a.purchaseDate || 0));
+
+                    sortedPlans.forEach(plan => {
+                        const planCard = document.createElement('div');
+                        planCard.classList.add('my-plan-card');
+                        const purchaseDate = plan.purchaseDate ? new Date(plan.purchaseDate).toLocaleDateString('bn-BD') : 'N/A';
+                        planCard.innerHTML = `
+                            <h3>${plan.name || 'N/A'}</h3>
+                            <p>ক্রয়ের তারিখ: ${purchaseDate}</p>
+                            <p>মূল্য: ৳ ${plan.planPrice ? plan.planPrice.toFixed(2) : '0.00'}</p>
+                            <p>দৈনিক আয়: ৳ ${plan.dailyIncome ? plan.dailyIncome.toFixed(2) : '0.00'}</p>
+                            <p>অবস্থা: <span class="status ${plan.status ? plan.status.toLowerCase() : 'unknown'}">${plan.status || 'Unknown'}</span></p>
+                        `;
+                        myPlansContainer.appendChild(planCard);
+                    });
+                } else {
+                    noPurchasedPlansMessage.style.display = 'block';
+                }
+            }, (error) => {
+                console.error("Error loading purchased plans:", error);
+                noPurchasedPlansMessage.style.display = 'block';
+                noPurchasedPlansMessage.textContent = 'আপনার প্লান লোড করতে সমস্যা হয়েছে।';
+            });
+        }
+    </script>
+</body>
+</html>

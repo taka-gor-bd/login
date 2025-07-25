@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taka Gor - লগইন</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E86AB; /* ডার্ক ব্লু */
+            --secondary-bg: #f6f5f5;  /* হালকা গ্রে/হোয়াইট */
+            --white-bg: #ffffff;
+            --accent-orange: #F26419; /* অরেঞ্জ */
+            --accent-green: #28A745;  /* গ্রিন */
+            --text-dark: #333;
+            --text-light: #555;
+            --border-light: #ddd;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --error-color: #ff3860;
+            --success-color: #28A745;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #4a9ec0 100%); /* প্রিমিয়াম ব্যাকগ্রাউন্ড */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            background-color: var(--white-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px var(--shadow-medium); /* আরও গভীর শ্যাডো */
+            text-align: center;
+            max-width: 420px; /* প্রস্থ সামান্য বাড়ানো হয়েছে */
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative; /* সাইটের নাম হেডার এবং ওয়েলকাম মেসেজের জন্য */
+            overflow: hidden; /* ভেতরের কন্টেন্ট বাইরে না যাওয়ার জন্য */
+            border: 1px solid rgba(255,255,255,0.2); /* হালকা সাদা বর্ডার */
+        }
+
+        .site-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 0;
+            margin: -30px -30px 25px -30px; /* কন্টেইনারের বাইরে নিয়ে আসা */
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800; /* আরও বোল্ড */
+            font-size: 1.8em; /* ফন্ট সাইজ বাড়ানো */
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px; /* ওয়েলকাম মেসেজের পর স্পেস */
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8em; /* ফন্ট সাইজ সামঞ্জস্য করা হয়েছে */
+        }
+        .welcome-message {
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 25px; /* লগইন ফর্ম থেকে দূরত্ব */
+            font-weight: 500;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.95em;
+        }
+
+        .input-group input {
+            width: calc(100% - 24px);
+            padding: 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--secondary-bg); /* ইনপুট ফিল্ডের ব্যাকগ্রাউন্ড */
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.2);
+            outline: none;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #226b8a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Loading Spinner CSS */
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            display: none;
+            margin-left: 8px;
+        }
+
+        .button-text {
+            white-space: nowrap;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        .forgot-password a {
+            color: var(--accent-orange);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .forgot-password a:hover {
+            color: #d15a15;
+            text-decoration: underline;
+        }
+
+
+        .switch-form {
+            margin-top: 25px;
+            font-size: 0.95em;
+            color: var(--text-light);
+        }
+
+        .switch-form a {
+            color: var(--accent-orange);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .switch-form a:hover {
+            color: #d15a15;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .error-message {
+            background-color: rgba(255, 56, 96, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        .success-message {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        /* মোবাইল স্ক্রিনের জন্য অতিরিক্ত সামঞ্জস্য */
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+            .site-header {
+                font-size: 1.6em;
+                margin: -25px -25px 20px -25px;
+                padding: 12px 0;
+            }
+            h2 {
+                font-size: 1.6em;
+                margin-bottom: 15px;
+            }
+            .welcome-message {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+            .input-group label {
+                font-size: 0.9em;
+            }
+            .input-group input {
+                padding: 10px;
+                font-size: 0.95em;
+            }
+            button {
+                padding: 12px 20px;
+                font-size: 1em;
+                margin-top: 15px;
+            }
+            .loading-spinner {
+                width: 18px;
+                height: 18px;
+            }
+            .forgot-password {
+                font-size: 0.85em;
+                margin-top: -8px;
+                margin-bottom: 12px;
+            }
+            .switch-form {
+                font-size: 0.9em;
+                margin-top: 20px;
+            }
+            .message {
+                padding: 8px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="site-header">Taka Gor</div> <h2>Welcome Back!</h2> 
+        <p class="welcome-message">আপনার অ্যাকাউন্টে লগইন করুন</p>
+
+        <div class="input-group">
+            <label for="login-email">ইমেইল</label>
+            <input type="email" id="login-email" placeholder="আপনার ইমেইল">
+        </div>
+        <div class="input-group">
+            <label for="login-password">পাসওয়ার্ড</label>
+            <input type="password" id="login-password" placeholder="আপনার পাসওয়ার্ড">
+        </div>
+        <div class="forgot-password">
+            <a href="forgot_password.html">পাসওয়ার্ড ভুলে গেছেন?</a> </div>
+        <button id="login-button">
+            <span class="button-text">লগইন করুন</span>
+            <div class="loading-spinner"></div>
+        </button>
+        <p class="message error-message" id="login-status-message" style="display: none;"></p>
+        
+        <p class="switch-form">
+            <span>আপনার কি অ্যাকাউন্ট নেই?</span>
+            <a href="registration.html">রেজিস্ট্রেশন করুন</a> </p>
+    </div>
+
+    <script type="module">
+        // firebase_config.js থেকে auth এবং database ইম্পোর্ট করুন
+        import { auth, database } from './js/firebase_config.js'; 
+        import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { ref, set } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const loginEmail = document.getElementById('login-email');
+        const loginPassword = document.getElementById('login-password');
+        const loginButton = document.getElementById('login-button');
+        const loginButtonText = loginButton.querySelector('.button-text');
+        const loginSpinner = loginButton.querySelector('.loading-spinner');
+        const loginStatusMessage = document.getElementById('login-status-message');
+
+        // Function to show loading state on button
+        function showLoading(button, textElement, spinnerElement) {
+            button.disabled = true;
+            textElement.textContent = 'লোড হচ্ছে...';
+            spinnerElement.style.display = 'block';
+        }
+
+        // Function to hide loading state on button
+        function hideLoading(button, textElement, spinnerElement, originalText) {
+            button.disabled = false;
+            textElement.textContent = originalText;
+            spinnerElement.style.display = 'none';
+        }
+
+        // Function to display status messages
+        function showStatusMessage(element, message, type) {
+            element.textContent = message;
+            element.style.display = 'block';
+            element.className = 'message'; // Reset classes
+            element.classList.add(type === 'success' ? 'success-message' : 'error-message');
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+
+        // Check auth state on load - if logged in, redirect to home
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = 'home.html';
+            }
+        });
+
+        // Handle Login button click
+        loginButton.addEventListener('click', async () => {
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value.trim();
+            loginStatusMessage.style.display = 'none'; // Hide previous message
+
+            if (!email || !password) {
+                showStatusMessage(loginStatusMessage, 'ইমেইল এবং পাসওয়ার্ড উভয়ই পূরণ করুন।', 'error');
+                return;
+            }
+
+            showLoading(loginButton, loginButtonText, loginSpinner);
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // OnAuthStateChanged will handle redirection on success
+            } catch (error) {
+                console.error("Login Error:", error.message);
+                let errorMessage = 'লগইন ব্যর্থ হয়েছে।';
+                if (error.code === 'auth/invalid-email' || error.code === 'auth/user-not-found') {
+                    errorMessage = 'ভুল ইমেইল বা পাসওয়ার্ড।';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage = 'ভুল পাসওয়ার্ড।';
+                } else if (error.code === 'auth/invalid-credential') {
+                    errorMessage = 'ভুল ইমেইল বা পাসওয়ার্ড।'; // More generic for invalid credentials
+                }
+                showStatusMessage(loginStatusMessage, errorMessage, 'error');
+            } finally {
+                hideLoading(loginButton, loginButtonText, loginSpinner, 'লগইন করুন');
+            }
+        });
+    </script>
+</body>
+</html>

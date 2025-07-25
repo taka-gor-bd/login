@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taka Gor - হোম</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E86AB;
+            --secondary-bg: #f6f5f5;
+            --white-bg: #ffffff;
+            --accent-orange: #F26419;
+            --accent-green: #28A745;
+            --text-dark: #333;
+            --text-light: #555;
+            --border-light: #ddd;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-bg);
+            margin: 0;
+            padding-bottom: 80px; /* Space for premium bottom nav */
+            color: var(--text-dark);
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header .logo-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        /* User Profile Info - Now under the header, more prominent */
+        .user-info-section {
+            background-color: var(--primary-color); /* Matches header background */
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            box-shadow: 0 4px 8px var(--shadow-medium);
+            margin-bottom: 20px; /* Space between user info and carousel */
+        }
+
+        .user-info-section .profile-icon-large {
+            font-size: 48px; /* Larger icon */
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .user-info-section .user-details {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .user-info-section .user-name-display {
+            font-size: 1.2em; /* Larger, more prominent name */
+            font-weight: 600;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-info-section .welcome-text {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 15px;
+        }
+
+        /* Carousel/Slider */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px var(--shadow-medium);
+            margin-bottom: 25px;
+            background-color: var(--white-bg);
+            aspect-ratio: 16 / 9; /* Maintains aspect ratio on resize */
+            max-height: 220px; /* Maximum height for carousel */
+        }
+
+        .carousel-slides {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+            will-change: transform; /* Performance hint */
+            scroll-snap-type: x mandatory;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .carousel-slides::-webkit-scrollbar {
+            display: none;
+        }
+        .carousel-slides {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            scroll-snap-align: start;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.4);
+            color: white;
+            border: none;
+            padding: 8px; /* Smaller touch target */
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 1.5em; /* Responsive font size */
+            line-height: 1; /* Center icon */
+            z-index: 1;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .carousel-button:active {
+            transform: translateY(-50%) scale(0.9);
+        }
+
+        .carousel-button.left {
+            left: 10px;
+        }
+
+        .carousel-button.right {
+            right: 10px;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.6em; /* Responsive heading size */
+        }
+
+        /* Balance Section */
+        .balance-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Reduced gap */
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .balance-box {
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            padding: 15px; /* Reduced padding */
+            box-shadow: 0 4px 10px var(--shadow-light);
+            text-align: center;
+            flex: 1 1 120px; /* Flexible item, min-width 120px */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .balance-box h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 0.9em; /* Smaller font for mobile */
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .balance-box .amount {
+            font-size: 1.6em; /* Responsive font size */
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0;
+        }
+
+        .balance-box.income .amount { color: var(--accent-green); }
+        .balance-box.referral .amount { color: var(--accent-orange); }
+
+        /* Specific styling for main balance */
+        .main-balance-box {
+            background-color: #e0f2f7; /* Lighter shade of primary */
+            border: 2px solid var(--primary-color);
+            flex-basis: 100%; /* Takes full width on its row */
+            padding: 20px; /* Slightly more padding */
+            margin-bottom: 10px;
+        }
+        .main-balance-box .amount {
+            font-size: 2em; /* Even larger for main balance */
+        }
+
+        .secondary-balances {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            justify-content: space-around;
+        }
+
+        /* Referral Box */
+        .referral-box {
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px var(--shadow-light);
+            margin-bottom: 20px;
+        }
+
+        .referral-box h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .referral-link-container {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Reduced gap */
+            margin-bottom: 12px;
+            flex-wrap: wrap; /* Allows wrapping on smaller screens */
+        }
+
+        .referral-link-container input {
+            flex-grow: 1;
+            padding: 8px 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.9em;
+            background-color: #f9f9f9;
+            color: var(--text-light);
+            cursor: text;
+            min-width: 120px; /* Minimum width for input */
+        }
+
+        .referral-link-container button {
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: auto;
+            margin-top: 0;
+            font-weight: 600;
+            flex-shrink: 0; /* Prevent button from shrinking */
+        }
+
+        .referral-link-container button:hover {
+            background-color: #d15a15;
+        }
+        .referral-link-container button:active {
+            transform: translateY(1px);
+        }
+
+        .share-button {
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .share-button:hover {
+            background-color: #218838;
+        }
+        .share-button:active {
+            transform: translateY(1px);
+        }
+
+        /* Dynamic Buttons Section */
+        .dynamic-buttons-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Auto-fit columns, min 100px */
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .dynamic-button {
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 4px 8px var(--shadow-light);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dynamic-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px var(--shadow-medium);
+        }
+        .dynamic-button:active {
+            transform: translateY(0px);
+        }
+
+        .dynamic-button .material-icons {
+            font-size: 30px; /* Slightly smaller for mobile grid */
+            color: var(--primary-color);
+            margin-bottom: 6px;
+        }
+
+        .dynamic-button span {
+            display: block;
+            font-weight: 500;
+            font-size: 0.85em; /* Responsive font size */
+            line-height: 1.2;
+        }
+
+        /* Bottom Navigation Bar - Premium Look */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--white-bg);
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0; /* Increased padding for better touch area */
+            border-top-left-radius: 20px; /* Rounded top corners */
+            border-top-right-radius: 20px;
+            z-index: 1100;
+            backdrop-filter: blur(5px); /* Slightly blurred background */
+            -webkit-backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.95); /* Semi-transparent */
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #777;
+            font-size: 0.8em; /* Responsive font size */
+            font-weight: 600;
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 5px 0;
+            flex: 1;
+            max-width: 90px; /* Limit width for items */
+            text-align: center;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--primary-color);
+            transform: translateY(-5px); /* Lift up slightly */
+        }
+        .bottom-nav-item:active {
+            transform: translateY(-2px); /* Click feedback */
+        }
+
+        .bottom-nav-item .material-icons {
+            font-size: 26px; /* Larger icons */
+            margin-bottom: 3px;
+        }
+
+        /* Notifications */
+        .notification-popup {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(46, 134, 171, 0.98); /* Primary Color with transparency */
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            display: none;
+            max-width: 90%;
+            text-align: center;
+            font-size: 0.9em;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .notification-popup p {
+            margin: 0 0 10px 0;
+            font-size: 1em;
+        }
+
+        .notification-popup .actions button {
+            background-color: white;
+            color: var(--primary-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            width: auto;
+            margin-top: 5px;
+        }
+
+        .notification-popup .actions button:hover {
+            background-color: #eee;
+        }
+
+        /* Desktop/Tablet Styles */
+        @media (min-width: 768px) {
+            .header {
+                padding: 15px 40px;
+            }
+            .user-info-section {
+                padding: 20px 40px;
+                margin-bottom: 30px;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+            .user-info-section .profile-icon-large {
+                font-size: 60px;
+            }
+            .user-info-section .user-name-display {
+                font-size: 1.4em;
+            }
+            .user-info-section .welcome-text {
+                font-size: 0.9em;
+            }
+            .content {
+                padding: 20px 40px;
+            }
+            .carousel-container {
+                max-height: 300px; /* Taller on desktop */
+            }
+            .carousel-button {
+                padding: 10px;
+                font-size: 2em;
+            }
+            h2 {
+                font-size: 2em;
+                margin-bottom: 25px;
+            }
+            .balance-section {
+                gap: 15px;
+                margin-bottom: 30px;
+                flex-wrap: nowrap; /* No wrapping on desktop */
+            }
+            .balance-box {
+                padding: 20px;
+                flex: 1; /* Equal width distribution */
+            }
+            .balance-box h3 {
+                font-size: 1em;
+            }
+            .balance-box .amount {
+                font-size: 2em;
+            }
+            .main-balance-box {
+                padding: 25px;
+            }
+            .main-balance-box .amount {
+                font-size: 2.5em;
+            }
+            .referral-box {
+                padding: 25px;
+                margin-bottom: 30px;
+            }
+            .referral-box h3 {
+                font-size: 1.2em;
+            }
+            .referral-link-container {
+                gap: 10px;
+                flex-wrap: nowrap;
+            }
+            .referral-link-container input {
+                padding: 10px;
+                font-size: 1em;
+                min-width: unset;
+            }
+            .referral-link-container button {
+                padding: 10px 15px;
+                font-size: 1em;
+            }
+            .share-button {
+                padding: 12px 20px;
+                font-size: 1.1em;
+            }
+            .dynamic-buttons-section {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 15px;
+                margin-top: 30px;
+            }
+            .dynamic-button {
+                padding: 15px;
+            }
+            .dynamic-button .material-icons {
+                font-size: 36px;
+            }
+            .dynamic-button span {
+                font-size: 1em;
+            }
+            .bottom-nav {
+                padding: 12px 0;
+            }
+            .bottom-nav-item {
+                font-size: 0.9em;
+            }
+            .bottom-nav-item .material-icons {
+                font-size: 30px;
+            }
+            .notification-popup {
+                padding: 20px 30px;
+                max-width: 600px;
+            }
+            .notification-popup p {
+                font-size: 1.1em;
+            }
+            .notification-popup .actions button {
+                padding: 10px 18px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-name">Taka Gor</div>
+        <div></div> </div>
+
+    <div class="user-info-section">
+        <span class="material-icons profile-icon-large">account_circle</span>
+        <div class="user-details">
+            <div class="user-name-display" id="user-display-name">ব্যবহারকারী</div>
+            <div class="welcome-text">স্বাগতম! আপনার ড্যাশবোর্ড</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="carousel-container">
+            <div class="carousel-slides" id="carousel-slides">
+                <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/2E86AB/FFFFFF?text=Welcome+to+TakaGor" alt="Welcome Slide"></div>
+                <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/F26419/FFFFFF?text=Start+Earning+Today" alt="Earn Slide"></div>
+                <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/28A745/FFFFFF?text=Invest+in+Plans" alt="Plans Slide"></div>
+            </div>
+            <button class="carousel-button left" id="carousel-prev">&#10094;</button>
+            <button class="carousel-button right" id="carousel-next">&#10095;</button>
+        </div>
+
+        <h2 style="text-align: center; color: var(--primary-color); margin-bottom: 20px; font-family: 'Montserrat', sans-serif;">আপনার ব্যালেন্স</h2>
+        <div class="balance-section">
+            <div class="balance-box main-balance-box">
+                <h3>Main Balance (মূল ব্যালেন্স)</h3>
+                <p class="amount" id="main-balance">৳ 0.00</p>
+            </div>
+            <div class="secondary-balances">
+                <div class="balance-box income">
+                    <h3>Income Balance (আয় ব্যালেন্স)</h3>
+                    <p class="amount" id="income-balance">৳ 0.00</p>
+                </div>
+                <div class="balance-box referral">
+                    <h3>Referral Balance (রেফারেল ব্যালেন্স)</h3>
+                    <p class="amount" id="referral-balance">৳ 0.00</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="referral-box">
+            <h3>রেফারেল লিংক</h3>
+            <div class="referral-link-container">
+                <input type="text" id="referral-link-input" value="Loading..." readonly>
+                <button id="copy-referral-link">কপি</button>
+            </div>
+            <button id="share-referral-link" class="share-button">শেয়ার করুন</button>
+        </div>
+
+        <div class="dynamic-buttons-section" id="dynamic-buttons-container">
+            <a href="plans.html" class="dynamic-button"><span class="material-icons">redeem</span><span>প্লান কিনুন</span></a>
+            <a href="withdraw.html" class="dynamic-button"><span class="material-icons">account_balance_wallet</span><span>উইথড্র</span></a>
+            <a href="profile.html#deposit-section-scroll" class="dynamic-button"><span class="material-icons">add_circle</span><span>ডিপোজিট</span></a>
+            <a href="profile.html#health-center-scroll" class="dynamic-button"><span class="material-icons">support_agent</span><span>হেল্প সেন্টার</span></a>
+        </div>
+
+        <div id="notification-popup" class="notification-popup">
+            <p id="notification-message"></p>
+            <div class="actions">
+                <button id="notification-ignore">View Later</button>
+                <button id="notification-view">View Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="home.html" class="bottom-nav-item active">
+            <span class="material-icons">home</span>
+            <span>হোম</span>
+        </a>
+        <a href="plans.html" class="bottom-nav-item">
+            <span class="material-icons">redeem</span>
+            <span>প্লান</span>
+        </a>
+        <a href="withdraw.html" class="bottom-nav-item">
+            <span class="material-icons">account_balance_wallet</span>
+            <span>উইথড্র</span>
+        </a>
+        <a href="profile.html" class="bottom-nav-item">
+            <span class="material-icons">person</span>
+            <span>প্রোফাইল</span>
+        </a>
+    </div>
+
+    <script type="module">
+        import { auth, database } from './js/firebase_config.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const userDisplayNameElem = document.getElementById('user-display-name');
+        const mainBalanceElem = document.getElementById('main-balance');
+        const incomeBalanceElem = document.getElementById('income-balance');
+        const referralBalanceElem = document.getElementById('referral-balance');
+        const referralLinkInput = document.getElementById('referral-link-input');
+        const copyReferralLinkBtn = document.getElementById('copy-referral-link');
+        const shareReferralLinkBtn = document.getElementById('share-referral-link');
+        const dynamicButtonsContainer = document.getElementById('dynamic-buttons-container');
+        const carouselSlides = document.getElementById('carousel-slides');
+        const carouselPrevBtn = document.getElementById('carousel-prev');
+        const carouselNextBtn = document.getElementById('carousel-next');
+
+        const notificationPopup = document.getElementById('notification-popup');
+        const notificationMessage = document.getElementById('notification-message');
+        const notificationIgnoreBtn = document.getElementById('notification-ignore');
+        const notificationViewBtn = document.getElementById('notification-view');
+
+        let currentUserUid;
+        let slideIndex = 0;
+        let carouselInterval;
+
+        // Ensure user is authenticated before accessing home page
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                loadUserData(user.uid);
+                loadHomepageCustomization();
+                listenForNotifications();
+            } else {
+                // If no user, redirect to login/registration page
+                window.location.href = 'index.html';
+            }
+        });
+
+        async function loadUserData(uid) {
+            const userRef = ref(database, 'users/' + uid);
+            onValue(userRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    userDisplayNameElem.textContent = data.name || 'ব্যবহারকারী';
+                    mainBalanceElem.textContent = `৳ ${data.mainBalance ? data.mainBalance.toFixed(2) : '0.00'}`;
+                    incomeBalanceElem.textContent = `৳ ${data.incomeBalance ? data.incomeBalance.toFixed(2) : '0.00'}`;
+                    referralBalanceElem.textContent = `৳ ${data.referralBalance ? data.referralBalance.toFixed(2) : '0.00'}`;
+                    referralLinkInput.value = `${window.location.origin}/index.html?ref=${uid}`; // Example referral link
+                } else {
+                    console.warn("No user data found for UID:", uid);
+                    // Optionally handle missing data, e.g., redirect to profile setup
+                    userDisplayNameElem.textContent = 'ব্যবহারকারী';
+                    mainBalanceElem.textContent = `৳ 0.00`;
+                    incomeBalanceElem.textContent = `৳ 0.00`;
+                    referralBalanceElem.textContent = `৳ 0.00`;
+                    referralLinkInput.value = 'লিংক লোড হচ্ছে...';
+                }
+            }, (error) => {
+                console.error("Error reading user data:", error);
+                alert("ব্যবহারকারীর তথ্য লোড করতে সমস্যা হয়েছে।");
+                userDisplayNameElem.textContent = 'ত্রুটি';
+                mainBalanceElem.textContent = `৳ ত্রুটি`;
+                incomeBalanceElem.textContent = `৳ ত্রুটি`;
+                referralBalanceElem.textContent = `৳ ত্রুটি`;
+                referralLinkInput.value = 'লোড ব্যর্থ';
+            });
+        }
+
+        copyReferralLinkBtn.addEventListener('click', () => {
+            referralLinkInput.select();
+            document.execCommand('copy');
+            alert('রেফারেল লিংক কপি করা হয়েছে!');
+        });
+
+        shareReferralLinkBtn.addEventListener('click', async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Taka Gor - রেফারেল লিংক',
+                        text: 'আমার রেফারেল লিংকের মাধ্যমে Taka Gor এ যোগ দিন এবং আয় শুরু করুন!',
+                        url: referralLinkInput.value,
+                    });
+                    console.log('Referral link shared successfully');
+                } catch (error) {
+                    console.error('Error sharing:', error);
+                    alert('শেয়ার করতে সমস্যা হয়েছে। লিংকটি কপি করে ম্যানুয়ালি শেয়ার করুন।');
+                }
+            } else {
+                alert('আপনার ব্রাউজারে শেয়ার অপশন উপলব্ধ নেই। লিংকটি কপি করে ম্যানুয়ালি শেয়ার করুন।');
+                referralLinkInput.select();
+                document.execCommand('copy');
+            }
+        });
+
+        async function loadHomepageCustomization() {
+            const homepageRef = ref(database, 'homepageCustomization');
+            onValue(homepageRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    // Load Carousel Images
+                    if (data.carouselImages) {
+                        carouselSlides.innerHTML = ''; // Clear existing slides
+                        // Sort by order if available, otherwise use default order
+                        const sortedImages = Object.values(data.carouselImages).sort((a, b) => (a.order || 0) - (b.order || 0));
+
+                        if (sortedImages.length > 0) {
+                            sortedImages.forEach(image => {
+                                const slide = document.createElement('div');
+                                slide.classList.add('carousel-slide');
+                                const img = document.createElement('img');
+                                img.src = image.url; // Assuming 'url' field in carouselImages
+                                img.alt = image.altText || 'Carousel Image';
+                                slide.appendChild(img);
+                                carouselSlides.appendChild(slide);
+                            });
+                            startCarousel();
+                        } else {
+                            // If no images from Firebase, use placeholders
+                            carouselSlides.innerHTML = `
+                                <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/2E86AB/FFFFFF?text=Welcome+to+TakaGor" alt="Welcome Slide"></div>
+                                <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/F26419/FFFFFF?text=Start+Earning+Today" alt="Earn Slide"></div>
+                                <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/28A745/FFFFFF?text=Invest+in+Plans" alt="Plans Slide"></div>
+                            `;
+                            startCarousel();
+                        }
+
+                    } else {
+                        // Fallback for default carousel if no data.carouselImages
+                        carouselSlides.innerHTML = `
+                            <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/2E86AB/FFFFFF?text=Welcome+to+TakaGor" alt="Welcome Slide"></div>
+                            <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/F26419/FFFFFF?text=Start+Earning+Today" alt="Earn Slide"></div>
+                            <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/28A745/FFFFFF?text=Invest+in+Plans" alt="Plans Slide"></div>
+                        `;
+                        startCarousel();
+                    }
+
+                    // Load Dynamic Buttons
+                    if (data.buttons) {
+                        dynamicButtonsContainer.innerHTML = ''; // Clear existing buttons
+                        // Sort by order if available
+                        const sortedButtons = Object.values(data.buttons).sort((a, b) => (a.order || 0) - (b.order || 0));
+
+                        if (sortedButtons.length > 0) {
+                            sortedButtons.forEach(button => {
+                                const btn = document.createElement('a');
+                                btn.href = button.link || '#';
+                                btn.classList.add('dynamic-button');
+                                btn.innerHTML = `<span class="material-icons">${button.icon || 'star'}</span><span>${button.text || 'Button'}</span>`;
+                                dynamicButtonsContainer.appendChild(btn);
+                            });
+                        } else {
+                            // Default buttons if no dynamic buttons from Firebase
+                             dynamicButtonsContainer.innerHTML = `
+                                <a href="plans.html" class="dynamic-button"><span class="material-icons">redeem</span><span>প্লান কিনুন</span></a>
+                                <a href="withdraw.html" class="dynamic-button"><span class="material-icons">account_balance_wallet</span><span>উইথড্র</span></a>
+                                <a href="profile.html#deposit-section-scroll" class="dynamic-button"><span class="material-icons">add_circle</span><span>ডিপোজিট</span></a>
+                                <a href="profile.html#health-center-scroll" class="dynamic-button"><span class="material-icons">support_agent</span><span>হেল্প সেন্টার</span></a>
+                            `;
+                        }
+
+                    } else {
+                         // Fallback for default dynamic buttons if no data.buttons
+                        dynamicButtonsContainer.innerHTML = `
+                            <a href="plans.html" class="dynamic-button"><span class="material-icons">redeem</span><span>প্লান কিনুন</span></a>
+                            <a href="withdraw.html" class="dynamic-button"><span class="material-icons">account_balance_wallet</span><span>উইথড্র</span></a>
+                            <a href="profile.html#deposit-section-scroll" class="dynamic-button"><span class="material-icons">add_circle</span><span>ডিপোজিট</span></a>
+                            <a href="profile.html#health-center-scroll" class="dynamic-button"><span class="material-icons">support_agent</span><span>হেল্প সেন্টার</span></a>
+                        `;
+                    }
+                } else {
+                    console.log("No homepage customization data found, showing defaults.");
+                    // Ensure defaults are rendered if the 'homepageCustomization' node doesn't exist
+                    carouselSlides.innerHTML = `
+                        <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/2E86AB/FFFFFF?text=Welcome+to+TakaGor" alt="Welcome Slide"></div>
+                        <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/F26419/FFFFFF?text=Start+Earning+Today" alt="Earn Slide"></div>
+                        <div class="carousel-slide"><img src="https://via.placeholder.com/600x220/28A745/FFFFFF?text=Invest+in+Plans" alt="Plans Slide"></div>
+                    `;
+                    startCarousel();
+                    dynamicButtonsContainer.innerHTML = `
+                        <a href="plans.html" class="dynamic-button"><span class="material-icons">redeem</span><span>প্লান কিনুন</span></a>
+                        <a href="withdraw.html" class="dynamic-button"><span class="material-icons">account_balance_wallet</span><span>উইথড্র</span></a>
+                        <a href="profile.html#deposit-section-scroll" class="dynamic-button"><span class="material-icons">add_circle</span><span>ডিপোজিট</span></a>
+                        <a href="profile.html#health-center-scroll" class="dynamic-button"><span class="material-icons">support_agent</span><span>হেল্প সেন্টার</span></a>
+                    `;
+                }
+            }, (error) => {
+                console.error("Error loading homepage customization:", error);
+                alert("হোমপেজ কাস্টমাইজেশন লোড করতে সমস্যা হয়েছে।");
+            });
+        }
+
+        function startCarousel() {
+            clearInterval(carouselInterval); // Clear any existing interval
+            const slides = carouselSlides.children;
+            if (slides.length === 0) {
+                // Hide buttons if no slides
+                carouselPrevBtn.style.display = 'none';
+                carouselNextBtn.style.display = 'none';
+                return;
+            } else {
+                carouselPrevBtn.style.display = 'flex'; // Show buttons
+                carouselNextBtn.style.display = 'flex';
+            }
+
+            function showSlide(index) {
+                carouselSlides.style.transform = `translateX(-${index * 100}%)`;
+            }
+
+            // Ensure slideIndex is valid if previous load had fewer slides
+            if (slideIndex >= slides.length) {
+                slideIndex = 0;
+            }
+            showSlide(slideIndex); // Show initial slide
+
+            carouselPrevBtn.addEventListener('click', () => {
+                slideIndex = (slideIndex - 1 + slides.length) % slides.length;
+                showSlide(slideIndex);
+            });
+
+            carouselNextBtn.addEventListener('click', () => {
+                slideIndex = (slideIndex + 1) % slides.length;
+                showSlide(slideIndex);
+            });
+
+            // Automatic slide change
+            carouselInterval = setInterval(() => {
+                slideIndex = (slideIndex + 1) % slides.length;
+                showSlide(slideIndex);
+            }, 5000); // Change slide every 5 seconds
+        }
+
+        async function listenForNotifications() {
+            const notificationRef = ref(database, 'notifications');
+            onValue(notificationRef, (snapshot) => {
+                const notifications = snapshot.val();
+                if (notifications) {
+                    // Convert to array and sort by timestamp (latest first)
+                    const sortedNotifications = Object.keys(notifications)
+                        .map(key => ({ id: key, ...notifications[key] }))
+                        .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                    if (sortedNotifications.length > 0) {
+                        const latestNotification = sortedNotifications[0]; // Get the latest notification
+
+                        // Check if this notification has been viewed/ignored by the current user
+                        if (!localStorage.getItem(`notification_${latestNotification.id}_viewed_by_${currentUserUid}`)) {
+                            notificationMessage.textContent = latestNotification.message;
+                            notificationPopup.style.display = 'block';
+
+                            notificationIgnoreBtn.onclick = () => {
+                                localStorage.setItem(`notification_${latestNotification.id}_viewed_by_${currentUserUid}`, 'ignored');
+                                notificationPopup.style.display = 'none';
+                            };
+
+                            notificationViewBtn.onclick = () => {
+                                localStorage.setItem(`notification_${latestNotification.id}_viewed_by_${currentUserUid}`, 'viewed');
+                                notificationPopup.style.display = 'none';
+                                alert("নোটিফিকেশন: " + latestNotification.message);
+                                // Optionally, navigate to a specific page related to the notification
+                                if (latestNotification.link) {
+                                    window.location.href = latestNotification.link;
+                                }
+                            };
+                        } else {
+                            notificationPopup.style.display = 'none'; // Hide if already viewed
+                        }
+                    } else {
+                        notificationPopup.style.display = 'none'; // No notifications
+                    }
+                } else {
+                    notificationPopup.style.display = 'none'; // No notifications node
+                }
+            }, (error) => {
+                console.error("Error listening to notifications:", error);
+                notificationPopup.style.display = 'none';
+            });
+        }
+
+    </script>
+</body>
+</html>

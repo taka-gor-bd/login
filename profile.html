@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taka Gor - প্রোফাইল</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2E86AB;
+            --secondary-bg: #f6f5f5;
+            --white-bg: #ffffff;
+            --accent-orange: #F26419;
+            --accent-green: #28A745;
+            --text-dark: #333;
+            --text-light: #555;
+            --border-light: #ddd;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --status-active: #28A745;
+            --status-inactive: #dc3545;
+            --info-bg: #e0f2f7; /* Lighter primary for info boxes */
+            --chat-user-bg: #e0f2f7;
+            --chat-ai-bg: #f0f0f0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-bg);
+            margin: 0;
+            padding-bottom: 80px; /* Space for premium bottom nav */
+            color: var(--text-dark);
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header .logo-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .content {
+            padding: 15px; /* মোবাইল স্ক্রিনের জন্য প্যাডিং কমানো হয়েছে */
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.8em; /* রেসপনসিভ ফন্ট সাইজ */
+        }
+
+        .section-card {
+            background-color: var(--white-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 12px var(--shadow-medium);
+            padding: 25px; /* প্যাডিং কমানো হয়েছে */
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .section-card h3 {
+            color: var(--primary-color);
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 10px;
+        }
+
+        /* Profile Info */
+        .profile-info p {
+            font-size: 0.95em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .profile-info p strong {
+            color: var(--primary-color);
+            font-weight: 600;
+            min-width: 80px;
+        }
+
+        .activation-status {
+            display: flex;
+            flex-direction: column; /* মোবাইল স্ক্রিনে নিচে নিচে দেখাবে */
+            align-items: flex-start;
+            justify-content: center;
+            background-color: var(--info-bg);
+            border: 1px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .activation-status span {
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .activation-status .status-text.active { color: var(--status-active); }
+        .activation-status .status-text.inactive { color: var(--status-inactive); }
+
+        .activate-button {
+            background-color: var(--status-active);
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+            width: 100%; /* ছোট স্ক্রিনে পুরো প্রস্থ নেবে */
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .activate-button:hover:not(:disabled) {
+            background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .activate-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .activate-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Referral Bonus */
+        .referral-bonus-section {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .referral-bonus-section h3 {
+            color: var(--accent-orange);
+            font-size: 1.2em;
+            margin-bottom: 12px;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .referral-level p {
+            margin: 4px 0;
+            font-size: 0.9em;
+            color: var(--text-light);
+        }
+
+        /* Deposit Section */
+        .deposit-info p {
+            font-size: 0.95em;
+            margin-bottom: 10px;
+        }
+
+        .deposit-number-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .deposit-number-container strong {
+            font-size: 1.05em;
+            color: var(--primary-color);
+        }
+
+        .copy-button {
+            background-color: var(--accent-green);
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .copy-button:hover {
+            background-color: #218838;
+        }
+        .copy-button:active {
+            transform: translateY(1px);
+        }
+
+        .deposit-input-group {
+            margin-top: 15px;
+            border: 1px dashed var(--border-light);
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .deposit-input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 0.9em;
+        }
+
+        .deposit-input-group input {
+            width: calc(100% - 20px);
+            padding: 9px;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .deposit-input-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.2);
+            outline: none;
+        }
+
+        .submit-deposit-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: 600;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .submit-deposit-button:hover:not(:disabled) {
+            background-color: #226b8a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .submit-deposit-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .submit-deposit-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Support Groups */
+        .support-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* 2 columns on small screens */
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .support-button {
+            background-color: var(--info-bg);
+            border: 1px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .support-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            background-color: #d8edf3;
+        }
+        .support-button:active {
+            transform: translateY(0);
+        }
+        .support-button .material-icons {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+        /* Specific colors for social media icons */
+        .support-button.whatsapp .material-icons { color: #25D366; }
+        .support-button.telegram .material-icons { color: #0088CC; }
+        .support-button.facebook .material-icons { color: #1877F2; }
+        .support-button.messenger .material-icons { color: #0084FF; } /* Placeholder icon for messenger */
+
+
+        /* Health Center (Chatbox) */
+        .chat-container {
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            height: 250px;
+            overflow-y: scroll;
+            padding: 12px;
+            margin-bottom: 12px;
+            background-color: var(--secondary-bg);
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .chat-message {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            max-width: 85%;
+            word-wrap: break-word;
+            font-size: 0.9em;
+            line-height: 1.4;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .chat-message.user {
+            background-color: var(--chat-user-bg);
+            align-self: flex-end;
+            text-align: right;
+            border-bottom-right-radius: 2px;
+        }
+
+        .chat-message.ai {
+            background-color: var(--chat-ai-bg);
+            align-self: flex-start;
+            text-align: left;
+            border-bottom-left-radius: 2px;
+        }
+        .chat-message small {
+            display: block;
+            font-size: 0.7em;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .chat-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chat-input-group select, .chat-input-group input {
+            flex-grow: 1;
+            padding: 9px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.9em;
+            min-width: 120px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .chat-input-group select:focus, .chat-input-group input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(46, 134, 171, 0.2);
+            outline: none;
+        }
+
+        .chat-input-group button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 9px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            width: auto;
+            margin-top: 0;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .chat-input-group button:hover:not(:disabled) {
+            background-color: #226b8a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .chat-input-group button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .chat-input-group button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Settings */
+        .settings-option {
+            background-color: var(--info-bg);
+            border: 1px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .settings-option:hover {
+            background-color: #d8edf3;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+        .settings-option:active {
+            transform: translateY(0);
+        }
+
+        .settings-option span:first-child {
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .settings-option .material-icons {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        /* Loading Spinner for general buttons within sections */
+        .action-button .loading-spinner,
+        .activate-button .loading-spinner,
+        .submit-deposit-button .loading-spinner,
+        .chat-input-group button .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
+        /* Bottom Navigation Bar - Premium Look (Re-used from home.html) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--white-bg);
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.15);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 1100;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #777;
+            font-size: 0.8em;
+            font-weight: 600;
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 5px 0;
+            flex: 1;
+            max-width: 90px;
+            text-align: center;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+        .bottom-nav-item:active {
+            transform: translateY(-2px);
+        }
+
+        .bottom-nav-item .material-icons {
+            font-size: 26px;
+            margin-bottom: 3px;
+        }
+
+        /* Desktop/Tablet Styles */
+        @media (min-width: 768px) {
+            .header {
+                padding: 15px 40px;
+            }
+            .content {
+                padding: 20px 40px;
+            }
+            h2 {
+                font-size: 2em;
+            }
+            .section-card {
+                padding: 30px;
+                margin-bottom: 25px;
+            }
+            .section-card h3 {
+                font-size: 1.5em;
+            }
+            .profile-info p {
+                font-size: 1em;
+                margin-bottom: 12px;
+                flex-wrap: nowrap;
+            }
+            .profile-info p strong {
+                min-width: 90px;
+            }
+            .activation-status {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+            }
+            .activation-status span {
+                font-size: 1.05em;
+            }
+            .activate-button {
+                padding: 12px 20px;
+                font-size: 1em;
+                width: auto;
+            }
+            .referral-bonus-section {
+                margin-top: 30px;
+                padding-top: 20px;
+            }
+            .referral-bonus-section h3 {
+                font-size: 1.3em;
+            }
+            .referral-level p {
+                font-size: 1em;
+            }
+            .deposit-info p {
+                font-size: 1em;
+            }
+            .deposit-number-container {
+                flex-wrap: nowrap;
+            }
+            .copy-button {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+            .deposit-input-group {
+                padding: 20px;
+            }
+            .deposit-input-group label {
+                font-size: 0.95em;
+            }
+            .deposit-input-group input {
+                padding: 10px;
+                font-size: 0.95em;
+            }
+            .submit-deposit-button {
+                padding: 12px 20px;
+                font-size: 1.1em;
+            }
+            .support-links-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 3+ columns on desktop */
+                gap: 20px;
+            }
+            .support-button {
+                padding: 20px;
+                font-size: 1em;
+            }
+            .support-button .material-icons {
+                font-size: 36px;
+            }
+            .chat-container {
+                height: 300px;
+                padding: 15px;
+            }
+            .chat-message {
+                margin-bottom: 10px;
+                padding: 10px 15px;
+                max-width: 80%;
+                font-size: 1em;
+            }
+            .chat-input-group {
+                flex-wrap: nowrap;
+                gap: 10px;
+            }
+            .chat-input-group select, .chat-input-group input {
+                padding: 10px;
+                font-size: 1em;
+                min-width: unset;
+            }
+            .chat-input-group button {
+                padding: 10px 15px;
+            }
+            .settings-option {
+                padding: 18px;
+            }
+            .settings-option span:first-child {
+                font-size: 1.05em;
+            }
+            .settings-option .material-icons {
+                font-size: 26px;
+            }
+            .bottom-nav {
+                padding: 12px 0;
+            }
+            .bottom-nav-item {
+                font-size: 0.9em;
+            }
+            .bottom-nav-item .material-icons {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-name">Taka Gor</div>
+        <div></div> 
+    </div>
+
+    <div class="content">
+        <h2>প্রোফাইল</h2>
+
+        <div class="section-card profile-section">
+            <h3>আমার তথ্য</h3>
+            <div class="profile-info">
+                <p><strong>নাম:</strong> <span id="profile-name"></span></p>
+                <p><strong>ইমেইল:</strong> <span id="profile-email"></span></p>
+                <p><strong>ফোন:</strong> <span id="profile-phone"></span></p>
+            </div>
+            <div class="activation-status">
+                <span>আইডি স্ট্যাটাস: <span id="activation-status-text" class="status-text inactive">Not Active</span></span>
+                <button id="activate-id-button" class="activate-button">
+                    <span class="button-text">৳ ৫০ দিয়ে আইডি এক্টিভ করুন</span>
+                    <div class="loading-spinner"></div>
+                </button>
+            </div>
+
+            <div class="referral-bonus-section">
+                <h3>আপনার রেফারেল বোনাস</h3>
+                <div id="referral-levels">
+                    <p>লেভেল ১: ৳ <span id="ref-level1-bonus">0.00</span></p>
+                    <p>লেভেল ২: ৳ <span id="ref-level2-bonus">0.00</span></p>
+                    <p>লেভেল ৩: ৳ <span id="ref-level3-bonus">0.00</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card deposit-section" id="deposit-section-scroll">
+            <h3>ডিপোজিট</h3>
+            <div class="deposit-info">
+                <p>মোট ডিপোজিট: ৳ <strong id="total-deposit-amount">0.00</strong></p>
+                <p>আপনি ডিপোজিট করতে চাইলে, নিচের নম্বরটিতে টাকা পাঠান এবং ট্রানজেকশন আইডি ও পরিমাণ দিন:</p>
+                <div class="deposit-number-container">
+                    বিকাশ/নগদ/রকেট নম্বর: <strong id="deposit-number">01XXXXXXXXX</strong> 
+                    <button class="copy-button" id="copy-deposit-number">কপি করুন</button>
+                </div>
+            </div>
+            <div class="deposit-input-group">
+                <label for="transaction-id">ট্রানজেকশন আইডি</label>
+                <input type="text" id="transaction-id" placeholder="আপনার ট্রানজেকশন আইডি দিন">
+                <label for="deposit-amount">পরিমাণ</label>
+                <input type="number" id="deposit-amount" placeholder="ডিপোজিট পরিমাণ" min="0" step="any">
+                <button class="submit-deposit-button" id="submit-deposit-request">
+                    <span class="button-text">ডিপোজিট রিকোয়েস্ট পাঠান</span>
+                    <div class="loading-spinner"></div>
+                </button>
+            </div>
+            <p style="text-align: center; margin-top: 20px;"><a href="javascript:void(0);" style="color:var(--primary-color); text-decoration: none; font-weight: 600;" onclick="alert('ডিপোজিট হিস্টোরি শীঘ্রই আসছে!');">ডিপোজিট হিস্টোরি দেখুন</a></p>
+        </div>
+
+        <div class="section-card support-center-section">
+            <h3>সাপোর্ট সেন্টার</h3>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 20px; font-size: 0.95em;">আমাদের সাপোর্ট টিম আপনার জন্য প্রস্তুত। যোগাযোগ করতে নিচের গ্রুপগুলোতে জয়েন করুন:</p>
+            <div class="support-links-grid">
+                <a href="#" class="support-button whatsapp" target="_blank">
+                    <span class="material-icons">whatsapp</span>
+                    <span>হোয়াটসঅ্যাপ গ্রুপ</span>
+                </a>
+                <a href="#" class="support-button telegram" target="_blank">
+                    <span class="material-icons">send</span> <span>টেলিগ্রাম গ্রুপ</span>
+                </a>
+                <a href="#" class="support-button facebook" target="_blank">
+                    <span class="material-icons">facebook</span>
+                    <span>ফেসবুক গ্রুপ</span>
+                </a>
+                <a href="#" class="support-button messenger" target="_blank">
+                    <span class="material-icons">chat</span> <span>মেসেঞ্জার গ্রুপ</span>
+                </a>
+            </div>
+            <p style="text-align: center; color: var(--text-light); margin-top: 20px; font-size: 0.85em;">(গ্রুপ লিঙ্কগুলো অ্যাডমিন প্যানেল থেকে সেট করা যাবে)</p>
+        </div>
+
+
+        <div class="section-card health-center-section" id="health-center-scroll">
+            <h3>হেলথ সেন্টার (AI চ্যাটবক্স)</h3>
+            <div id="chat-container" class="chat-container">
+                </div>
+            <div class="chat-input-group">
+                <select id="problem-category">
+                    <option value="">ক্যাটাগরি নির্বাচন করুন</option>
+                    <option value="withdrawal">উইথড্র সমস্যা</option>
+                    <option value="deposit">ডিপোজিট সমস্যা</option>
+                    <option value="plan">প্লান সংক্রান্ত সমস্যা</option>
+                    <option value="account">অ্যাকাউন্ট সমস্যা</option>
+                    <option value="other">অন্যান্য</option>
+                </select>
+                <input type="text" id="chat-message-input" placeholder="আপনার বার্তা লিখুন...">
+                <button id="send-chat-message">
+                    <span class="button-text">পাঠান</span>
+                    <div class="loading-spinner"></div>
+                </button>
+            </div>
+        </div>
+
+        <div class="section-card settings-section">
+            <h3>সেটিংস</h3>
+            <div class="settings-option" id="change-password">
+                <span>পাসওয়ার্ড পরিবর্তন করুন</span>
+                <span class="material-icons">chevron_right</span>
+            </div>
+            <div class="settings-option" id="edit-profile">
+                <span>প্রোফাইল এডিট করুন</span>
+                <span class="material-icons">chevron_right</span>
+            </div>
+            <div class="settings-option" id="logout-button">
+                <span>লগআউট</span>
+                <span class="material-icons">logout</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="home.html" class="bottom-nav-item">
+            <span class="material-icons">home</span>
+            <span>হোম</span>
+        </a>
+        <a href="plans.html" class="bottom-nav-item">
+            <span class="material-icons">redeem</span>
+            <span>প্লান</span>
+        </a>
+        <a href="withdraw.html" class="bottom-nav-item">
+            <span class="material-icons">account_balance_wallet</span>
+            <span>উইথড্র</span>
+        </a>
+        <a href="profile.html" class="bottom-nav-item active">
+            <span class="material-icons">person</span>
+            <span>প্রোফাইল</span>
+        </a>
+    </div>
+
+    <script type="module">
+        // firebase_config.js থেকে auth এবং database ইম্পোর্ট করুন
+        import { auth, database } from './js/firebase_config.js'; 
+        import { onAuthStateChanged, signOut, updatePassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+        import { ref, onValue, get, set, push, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const profileName = document.getElementById('profile-name');
+        const profileEmail = document.getElementById('profile-email');
+        const profilePhone = document.getElementById('profile-phone');
+        const activationStatusText = document.getElementById('activation-status-text');
+        const activateIdButton = document.getElementById('activate-id-button');
+        const activateButtonText = activateIdButton.querySelector('.button-text');
+        const activateSpinner = activateIdButton.querySelector('.loading-spinner');
+
+        const refLevel1Bonus = document.getElementById('ref-level1-bonus');
+        const refLevel2Bonus = document.getElementById('ref-level2-bonus');
+        const refLevel3Bonus = document.getElementById('ref-level3-bonus');
+
+        const totalDepositAmount = document.getElementById('total-deposit-amount');
+        const depositNumberElem = document.getElementById('deposit-number');
+        const copyDepositNumberBtn = document.getElementById('copy-deposit-number');
+        const transactionIdInput = document.getElementById('transaction-id');
+        const depositAmountInput = document.getElementById('deposit-amount');
+        const submitDepositRequestBtn = document.getElementById('submit-deposit-request');
+        const submitDepositButtonText = submitDepositRequestBtn.querySelector('.button-text');
+        const submitDepositSpinner = submitDepositRequestBtn.querySelector('.loading-spinner');
+
+        const chatContainer = document.getElementById('chat-container');
+        const problemCategorySelect = document.getElementById('problem-category');
+        const chatMessageInput = document.getElementById('chat-message-input');
+        const sendChatMessageBtn = document.getElementById('send-chat-message');
+        const sendChatButtonText = sendChatMessageBtn.querySelector('.button-text');
+        const sendChatSpinner = sendChatMessageBtn.querySelector('.loading-spinner');
+
+        const changePasswordOption = document.getElementById('change-password');
+        const editProfileOption = document.getElementById('edit-profile');
+        const logoutButton = document.getElementById('logout-button');
+
+        // Support Group Links
+        const whatsappLink = document.querySelector('.support-button.whatsapp');
+        const telegramLink = document.querySelector('.support-button.telegram');
+        const facebookLink = document.querySelector('.support-button.facebook');
+        const messengerLink = document.querySelector('.support-button.messenger');
+
+
+        let currentUserUid;
+        let userData = {}; // Store user data for easy access
+
+        // Ensure user is authenticated before accessing page
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                loadUserProfile(user.uid);
+                loadDepositInformation(user.uid); // Updated to load deposit number
+                loadSupportLinks(); // Load support group links
+                listenToChatMessages(user.uid);
+            } else {
+                window.location.href = 'index.html'; // Redirect to login if not authenticated
+            }
+        });
+
+        function showButtonLoading(button, textElement, spinnerElement, originalText) {
+            button.disabled = true;
+            textElement.textContent = 'লোড হচ্ছে...';
+            spinnerElement.style.display = 'block';
+        }
+
+        function hideButtonLoading(button, textElement, spinnerElement, originalText) {
+            button.disabled = false;
+            textElement.textContent = originalText;
+            spinnerElement.style.display = 'none';
+        }
+
+        function loadUserProfile(uid) {
+            const userRef = ref(database, 'users/' + uid);
+            onValue(userRef, (snapshot) => {
+                userData = snapshot.val();
+                if (userData) {
+                    profileName.textContent = userData.name || 'N/A';
+                    profileEmail.textContent = userData.email || 'N/A';
+                    profilePhone.textContent = userData.phone || 'N/A';
+
+                    if (userData.isActive) {
+                        activationStatusText.textContent = 'Active';
+                        activationStatusText.classList.remove('inactive');
+                        activationStatusText.classList.add('active');
+                        activateIdButton.style.display = 'none'; // Hide button if active
+                    } else {
+                        activationStatusText.textContent = 'Not Active';
+                        activationStatusText.classList.remove('active');
+                        activationStatusText.classList.add('inactive');
+                        activateIdButton.style.display = 'flex'; // Show button if inactive
+                    }
+
+                    // Placeholder for referral bonuses (assuming stored under user data)
+                    // These should be updated by the system based on actual referrals
+                    refLevel1Bonus.textContent = userData.referralBonusLevel1 ? userData.referralBonusLevel1.toFixed(2) : '0.00';
+                    refLevel2Bonus.textContent = userData.referralBonusLevel2 ? userData.referralBonusLevel2.toFixed(2) : '0.00';
+                    refLevel3Bonus.textContent = userData.referralBonusLevel3 ? userData.referralBonusLevel3.toFixed(2) : '0.00';
+
+                } else {
+                    console.warn("No user profile data found for UID:", uid);
+                    profileName.textContent = 'N/A';
+                    profileEmail.textContent = 'N/A';
+                    profilePhone.textContent = 'N/A';
+                    activationStatusText.textContent = 'Not Active';
+                    activationStatusText.classList.remove('active');
+                    activationStatusText.classList.add('inactive');
+                    activateIdButton.style.display = 'flex'; // Default to showing activate button
+                    alert('প্রোফাইল তথ্য লোড করতে সমস্যা হয়েছে।');
+                }
+            }, (error) => {
+                console.error("Error loading user profile:", error);
+                alert("প্রোফাইল তথ্য লোড করতে সমস্যা হয়েছে।");
+            });
+        }
+
+        activateIdButton.addEventListener('click', async () => {
+            if (!currentUserUid) {
+                alert('অনুগ্রহ করে লগইন করুন।');
+                return;
+            }
+            if (userData.isActive) {
+                alert('আপনার আইডি ইতিমধ্যেই এক্টিভ করা আছে।');
+                return;
+            }
+
+            const activationCost = 50;
+            if (confirm(`আপনার আইডি ৳ ${activationCost} দিয়ে এক্টিভ করতে চান? এই টাকা আপনার মূল ব্যালেন্স থেকে কাটা হবে।`)) {
+                showButtonLoading(activateIdButton, activateButtonText, activateSpinner, '৳ ৫০ দিয়ে আইডি এক্টিভ করুন');
+                try {
+                    await runTransaction(ref(database, `users/${currentUserUid}`), (currentData) => {
+                        if (currentData === null) return {};
+                        const mainBalance = currentData.mainBalance || 0;
+
+                        if (mainBalance < activationCost) {
+                            alert('আপনার মূল ব্যালেন্সে পর্যাপ্ত টাকা নেই।');
+                            return; // Abort transaction
+                        }
+
+                        currentData.mainBalance = mainBalance - activationCost;
+                        currentData.isActive = true; // Set user as active
+                        return currentData;
+                    });
+                    alert('আইডি সফলভাবে এক্টিভ হয়েছে!');
+                    // UI will update via onValue listener
+                } catch (error) {
+                    console.error("Error activating ID:", error);
+                    if (error.message && error.message.includes("aborted")) {
+                        // Alert already handled inside transaction
+                    } else {
+                        alert('আইডি এক্টিভ করতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+                    }
+                } finally {
+                    hideButtonLoading(activateIdButton, activateButtonText, activateSpinner, '৳ ৫০ দিয়ে আইডি এক্টিভ করুন');
+                }
+            }
+        });
+
+        // Deposit Section Logic
+        const defaultDepositNumber = "01XXXXXXXXX"; // Default number, will be overridden by admin config if available
+        depositNumberElem.textContent = defaultDepositNumber;
+
+        async function loadDepositInformation() {
+            const adminConfigRef = ref(database, 'adminConfig/depositNumber');
+            onValue(adminConfigRef, (snapshot) => {
+                const adminDepositNumber = snapshot.val();
+                if (adminDepositNumber) {
+                    depositNumberElem.textContent = adminDepositNumber;
+                } else {
+                    depositNumberElem.textContent = defaultDepositNumber; // Fallback to default
+                }
+            }, (error) => {
+                console.error("Error loading admin deposit number:", error);
+                depositNumberElem.textContent = defaultDepositNumber; // Fallback on error
+            });
+
+            // Load total approved deposits for the user
+            const userDepositsRef = ref(database, `users/${currentUserUid}/depositRequests`);
+            onValue(userDepositsRef, (snapshot) => {
+                let total = 0;
+                snapshot.forEach(childSnapshot => {
+                    const deposit = childSnapshot.val();
+                    if (deposit.status === 'Approved') { // Only count approved deposits towards total
+                        total += deposit.amount;
+                    }
+                });
+                totalDepositAmount.textContent = total.toFixed(2);
+            }, (error) => {
+                console.error("Error loading user deposit history for total:", error);
+                totalDepositAmount.textContent = '0.00';
+            });
+        }
+
+        copyDepositNumberBtn.addEventListener('click', () => {
+            const textToCopy = depositNumberElem.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('ডিপোজিট নম্বর কপি করা হয়েছে!');
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                alert('নম্বর কপি করতে ব্যর্থ হয়েছে। ম্যানুয়ালি কপি করুন।');
+            });
+        });
+
+        submitDepositRequestBtn.addEventListener('click', async () => {
+            const transactionId = transactionIdInput.value.trim();
+            const amount = parseFloat(depositAmountInput.value);
+
+            if (!transactionId || isNaN(amount) || amount <= 0) {
+                alert('বৈধ ট্রানজেকশন আইডি এবং পরিমাণ লিখুন।');
+                return;
+            }
+
+            if (!confirm(`আপনি ৳ ${amount.toFixed(2)} ডিপোজিট রিকোয়েস্ট পাঠাতে চান?`)) {
+                return;
+            }
+
+            showButtonLoading(submitDepositRequestBtn, submitDepositButtonText, submitDepositSpinner, 'ডিপোজিট রিকোয়েস্ট পাঠান');
+
+            try {
+                // Submit deposit request to central 'deposits' node for admin approval
+                const newDepositRef = push(ref(database, 'deposits')); 
+                await set(newDepositRef, {
+                    userId: currentUserUid,
+                    userName: userData.name || 'Unknown User', // Include user name for admin view
+                    userEmail: userData.email || 'N/A',
+                    transactionId: transactionId,
+                    amount: amount,
+                    requestDate: serverTimestamp(),
+                    status: 'Pending'
+                });
+
+                // Also save to user's personal deposit history for display
+                const userDepositReqRef = push(ref(database, `users/${currentUserUid}/depositRequests`));
+                await set(userDepositReqRef, {
+                    transactionId: transactionId,
+                    amount: amount,
+                    requestDate: serverTimestamp(),
+                    status: 'Pending'
+                });
+
+                alert('ডিপোজিট রিকোয়েস্ট সফলভাবে জমা দেওয়া হয়েছে। অ্যাডমিন অনুমোদনের জন্য অপেক্ষা করুন।');
+                transactionIdInput.value = '';
+                depositAmountInput.value = '';
+            } catch (error) {
+                console.error("Error submitting deposit request:", error);
+                alert('ডিপোজিট রিকোয়েস্ট জমা দিতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+            } finally {
+                hideButtonLoading(submitDepositRequestBtn, submitDepositButtonText, submitDepositSpinner, 'ডিপোজিট রিকোয়েস্ট পাঠান');
+            }
+        });
+
+        // Support Group Links Logic
+        async function loadSupportLinks() {
+            const linksRef = ref(database, 'supportLinks'); // Assuming admin sets these here
+            onValue(linksRef, (snapshot) => {
+                const links = snapshot.val();
+                if (links) {
+                    whatsappLink.href = links.whatsapp || '#';
+                    telegramLink.href = links.telegram || '#';
+                    facebookLink.href = links.facebook || '#';
+                    messengerLink.href = links.messenger || '#'; // Assuming Messenger URL
+                } else {
+                    console.warn("No support links found in Firebase. Using default '#'.");
+                }
+            }, (error) => {
+                console.error("Error loading support links:", error);
+                // Keep default '#' links
+            });
+        }
+
+
+        // Health Center (AI Chatbox) Logic
+        sendChatMessageBtn.addEventListener('click', async () => {
+            const messageText = chatMessageInput.value.trim();
+            const category = problemCategorySelect.value;
+
+            if (!messageText || !category) {
+                alert('অনুগ্রহ করে আপনার বার্তা এবং ক্যাটাগরি উভয়ই পূরণ করুন।');
+                return;
+            }
+            
+            showButtonLoading(sendChatMessageBtn, sendChatButtonText, sendChatSpinner, 'পাঠান');
+
+            try {
+                // Add user message to chat
+                // Add timestamp to message object for display
+                const userMessageTimestamp = serverTimestamp();
+                addChatMessage(messageText, 'user', new Date()); // Display instantly with client-side time
+
+                // Send to Firebase
+                const chatRef = push(ref(database, `users/${currentUserUid}/healthCenterChat`));
+                await set(chatRef, {
+                    sender: 'user',
+                    message: messageText,
+                    category: category,
+                    timestamp: userMessageTimestamp
+                });
+
+                chatMessageInput.value = ''; // Clear input
+                problemCategorySelect.value = ''; // Clear category
+
+                // Simulate AI response (in a real scenario, this would be handled by a Cloud Function or backend service)
+                setTimeout(() => {
+                    const aiMessage = `আপনার "${category}" ক্যাটাগরির বার্তাটি পেয়েছি। আমাদের AI/সাপোর্ট টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে।`;
+                    addChatMessage(aiMessage, 'ai', new Date()); // Display AI response
+                    // Save AI response to Firebase too if you want it in history
+                    push(ref(database, `users/${currentUserUid}/healthCenterChat`)).set({
+                        sender: 'ai',
+                        message: aiMessage,
+                        timestamp: serverTimestamp()
+                    });
+                }, 2000); // 2 seconds delay for AI response
+                
+            } catch (error) {
+                console.error("Error sending chat message:", error);
+                alert('বার্তা পাঠাতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+            } finally {
+                hideButtonLoading(sendChatMessageBtn, sendChatButtonText, sendChatSpinner, 'পাঠান');
+            }
+        });
+
+        function addChatMessage(message, sender, timestamp) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chat-message', sender);
+            const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+            messageDiv.innerHTML = `${message} <small>${date.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })}</small>`;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll to bottom
+        }
+
+        function listenToChatMessages(uid) {
+            const chatRef = ref(database, `users/${uid}/healthCenterChat`);
+            onValue(chatRef, (snapshot) => {
+                chatContainer.innerHTML = ''; // Clear existing messages
+                if (snapshot.exists()) {
+                    // Sort messages by timestamp
+                    const messages = [];
+                    snapshot.forEach(childSnapshot => {
+                        messages.push(childSnapshot.val());
+                    });
+                    messages.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0)); // Sort ascending by timestamp
+
+                    messages.forEach(message => {
+                        addChatMessage(message.message, message.sender, message.timestamp);
+                    });
+                }
+            }, (error) => {
+                console.error("Error loading chat messages:", error);
+                alert("চ্যাট বার্তা লোড করতে সমস্যা হয়েছে।");
+            });
+        }
+
+
+        // Settings Options
+        logoutButton.addEventListener('click', async () => {
+            if (confirm('আপনি কি লগআউট করতে চান?')) {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'index.html'; // Redirect to login
+                } catch (error) {
+                    console.error("Error signing out:", error);
+                    alert('লগআউট করতে সমস্যা হয়েছে।');
+                }
+            }
+        });
+
+        changePasswordOption.addEventListener('click', async () => {
+            const newPassword = prompt('আপনার নতুন পাসওয়ার্ড লিখুন (কমপক্ষে ৬ অক্ষর):');
+            if (newPassword && newPassword.length >= 6) {
+                const user = auth.currentUser;
+                if (user) {
+                    try {
+                        await updatePassword(user, newPassword);
+                        alert('পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে।');
+                    } catch (error) {
+                        console.error("Error changing password:", error);
+                        let errorMessage = 'পাসওয়ার্ড পরিবর্তন করতে সমস্যা হয়েছে।';
+                        if (error.code === 'auth/requires-recent-login') {
+                            errorMessage += ' সুরক্ষার কারণে, আপনাকে আবার লগইন করতে হবে এবং তারপর পাসওয়ার্ড পরিবর্তন করতে পারবেন।';
+                        } else if (error.message) {
+                            errorMessage += ` ত্রুটি: ${error.message}`;
+                        }
+                        alert(errorMessage);
+                    }
+                } else {
+                    alert('পাসওয়ার্ড পরিবর্তন করার জন্য আপনাকে লগইন করতে হবে।');
+                }
+            } else if (newPassword !== null) {
+                alert('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।');
+            }
+        });
+
+        editProfileOption.addEventListener('click', () => {
+            alert('প্রোফাইল এডিট অপশন শীঘ্রই আসছে! বর্তমানে আপনি আপনার নাম এবং ফোন নম্বর পরিবর্তন করতে পারবেন না।');
+            // ভবিষ্যতে এখানে প্রোফাইল এডিটের জন্য একটি মডাল বা নতুন পেজে নিয়ে যাওয়ার লজিক থাকতে পারে।
+            // উদাহরণস্বরূপ:
+            // const newName = prompt('নতুন নাম দিন:', userData.name);
+            // if (newName !== null && newName.trim() !== '') {
+            //     set(ref(database, `users/${currentUserUid}/name`), newName).then(() => alert('নাম আপডেট করা হয়েছে।'));
+            // }
+        });
+    </script>
+</body>
+</html>
